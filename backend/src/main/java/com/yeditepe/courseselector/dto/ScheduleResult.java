@@ -21,4 +21,5 @@ public class ScheduleResult {
     private List<String> excludedCourses; // Courses that couldn't fit in the schedule
     private boolean hasOverlap; // Çakışma var mı
     private int overlapMinutes; // Toplam çakışma süresi (dakika)
+    private List<OverlapDetail> overlapDetails; // Çakışma detayları
 }

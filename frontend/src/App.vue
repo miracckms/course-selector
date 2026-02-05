@@ -331,12 +331,31 @@
                 </div>
                 <div class="flex-1">
                   <h3 class="font-bold text-yellow-400 mb-1">⚠️ Çakışma Uyarısı</h3>
-                  <p class="text-sm text-secondary">
-                    Programda <span class="font-bold text-yellow-300">{{ scheduleResult.overlapMinutes }} dakikalık</span> çakışma var. 
-                    Bu derslerin saatlerine dikkat edin!
+                  <p class="text-sm text-secondary mb-3">
+                    Programda <span class="font-bold text-yellow-300">{{ scheduleResult.overlapMinutes }} dakikalık</span> çakışma var.
                   </p>
-                  <p class="text-xs text-secondary mt-2 opacity-75">
-                    💡 İpucu: En fazla 1 saatlik çakışma kabul edilir. Çakışan derslerin bir kısmına katılamayabilirsiniz.
+                  
+                  <!-- Çakışma Detayları -->
+                  <div v-if="scheduleResult.overlapDetails && scheduleResult.overlapDetails.length > 0" class="space-y-2">
+                    <div v-for="(overlap, idx) in scheduleResult.overlapDetails" :key="idx"
+                         class="flex items-center gap-2 p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
+                      <span class="text-lg">⚡</span>
+                      <div class="flex-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <span class="font-bold text-yellow-300">{{ overlap.course1Code }}</span>
+                          <span class="text-yellow-500">↔</span>
+                          <span class="font-bold text-yellow-300">{{ overlap.course2Code }}</span>
+                        </div>
+                        <div class="text-xs text-secondary mt-1">
+                          📅 {{ overlap.dayTurkish }} • 🕐 {{ overlap.overlapStart }} - {{ overlap.overlapEnd }} 
+                          <span class="text-yellow-400 font-semibold">({{ overlap.overlapMinutes }} dk)</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <p class="text-xs text-secondary mt-3 opacity-75">
+                    💡 İpucu: Çakışan derslerin bir kısmına katılamayabilirsiniz.
                   </p>
                 </div>
               </div>

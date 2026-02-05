@@ -79,6 +79,7 @@ public class ScheduleService {
                 overlap.totalMinutes + " dakika). Çakışan derslere dikkat edin.");
             result.setHasOverlap(true);
             result.setOverlapMinutes(overlap.totalMinutes);
+            result.setOverlapDetails(calculateOverlapDetails(allSlots));
         }
         
         return result;
@@ -120,12 +121,19 @@ public class ScheduleService {
             ScoredSchedule best = validSchedules.get(0);
             ScheduleResult result = createSuccessResult(best.courses, best.metrics);
             
-            // Çakışma varsa kullanıcıyı bilgilendir
+            // Çakışma varsa kullanıcıyı bilgilendir ve detayları ekle
             if (best.overlapCount > 0) {
                 result.setMessage("⚠️ Program oluşturuldu! " + best.overlapCount + " çakışma var (" + 
                     best.totalOverlapMinutes + " dakika). Çakışan derslere dikkat edin.");
                 result.setHasOverlap(true);
                 result.setOverlapMinutes(best.totalOverlapMinutes);
+                
+                // Çakışma detaylarını hesapla
+                List<TimeSlot> allSlots = new ArrayList<>();
+                for (Course course : best.courses) {
+                    allSlots.addAll(getTimeSlotsWithCode(course));
+                }
+                result.setOverlapDetails(calculateOverlapDetails(allSlots));
             }
             
             return result;
@@ -317,6 +325,7 @@ public class ScheduleService {
             message.append("⚠️ " + finalOverlap.count + " çakışma var (" + finalOverlap.totalMinutes + " dk). ");
             result.setHasOverlap(true);
             result.setOverlapMinutes(finalOverlap.totalMinutes);
+            result.setOverlapDetails(calculateOverlapDetails(usedSlots));
         }
         
         if (!excludedCodes.isEmpty()) {
@@ -563,14 +572,79 @@ public class ScheduleService {
     private static class OverlapInfo {
         int count;
         int totalMinutes;
+        List<OverlapDetail> details;
         
         OverlapInfo(int count, int totalMinutes) {
             this.count = count;
             this.totalMinutes = totalMinutes;
+            this.details = new ArrayList<>();
+        }
+        
+        OverlapInfo(int count, int totalMinutes, List<OverlapDetail> details) {
+            this.count = count;
+            this.totalMinutes = totalMinutes;
+            this.details = details;
         }
         
         boolean isAcceptable() {
             return count <= MAX_OVERLAP_COUNT && totalMinutes <= MAX_OVERLAP_MINUTES;
         }
+    }
+    
+    /**
+     * Çakışma detaylarını hesaplar
+     */
+    private List<OverlapDetail> calculateOverlapDetails(List<TimeSlot> slots) {
+        List<OverlapDetail> details = new ArrayList<>();
+        Set<String> processedPairs = new HashSet<>();
+        
+        Map<String, String> dayTurkish = Map.of(
+            "MON", "Pazartesi",
+            "TUE", "Salı", 
+            "WED", "Çarşamba",
+            "THU", "Perşembe",
+            "FRI", "Cuma",
+            "SAT", "Cumartesi",
+            "SUN", "Pazar"
+        );
+        
+        for (int i = 0; i < slots.size(); i++) {
+            for (int j = i + 1; j < slots.size(); j++) {
+                TimeSlot slot1 = slots.get(i);
+                TimeSlot slot2 = slots.get(j);
+                
+                // Aynı dersin farklı saatlerini sayma
+                if (slot1.courseCode != null && slot1.courseCode.equals(slot2.courseCode)) {
+                    continue;
+                }
+                
+                int overlapMinutes = slot1.getOverlapMinutes(slot2);
+                if (overlapMinutes > 0) {
+                    String pairKey = slot1.courseCode + "-" + slot2.courseCode + "-" + slot1.day;
+                    String pairKeyReverse = slot2.courseCode + "-" + slot1.courseCode + "-" + slot1.day;
+                    
+                    if (!processedPairs.contains(pairKey) && !processedPairs.contains(pairKeyReverse)) {
+                        processedPairs.add(pairKey);
+                        
+                        // Çakışma başlangıç ve bitiş saatlerini hesapla
+                        LocalTime overlapStart = slot1.start.isAfter(slot2.start) ? slot1.start : slot2.start;
+                        LocalTime overlapEnd = slot1.end.isBefore(slot2.end) ? slot1.end : slot2.end;
+                        
+                        OverlapDetail detail = new OverlapDetail(
+                            slot1.courseCode,
+                            slot2.courseCode,
+                            slot1.day,
+                            dayTurkish.getOrDefault(slot1.day, slot1.day),
+                            overlapStart.format(TIME_FORMATTER),
+                            overlapEnd.format(TIME_FORMATTER),
+                            overlapMinutes
+                        );
+                        details.add(detail);
+                    }
+                }
+            }
+        }
+        
+        return details;
     }
 }
