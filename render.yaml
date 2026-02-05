@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: course-selector
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/seasons
+    envVars:
+      - key: YEDITEPE_USERNAME
+        sync: false
+      - key: YEDITEPE_PASSWORD
+        sync: false
