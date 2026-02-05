@@ -18,6 +18,15 @@
           </div>
           
           <div class="flex items-center gap-3">
+            <!-- Active Users Badge -->
+            <div v-if="activeUserCount > 0" class="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl active-users-badge">
+              <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+              </span>
+              <span class="text-sm font-medium">{{ activeUserCount }} aktif</span>
+            </div>
+            
             <div v-if="activeSeason" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl season-badge">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -333,7 +342,7 @@
               </div>
             </div>
             
-            <!-- İstatistikler, Başlık ve Export Butonları -->
+            <!-- İstatistikler ve Başlık -->
             <div class="flex items-center gap-3 flex-wrap animate-slide-down">
               <div class="stat-card stat-blue">
                 <span class="text-2xl font-bold">{{ scheduleResult.totalCredits }}</span>
@@ -357,43 +366,18 @@
                 <h2 class="text-base font-bold text-primary">{{ activeSeason?.year }} {{ activeSeason?.name }}</h2>
                 <p class="text-xs text-secondary">{{ new Date().toLocaleDateString('tr-TR') }}</p>
               </div>
-              
-              <!-- Export Buttons -->
-              <div class="flex gap-2 ml-auto">
-                <button 
-                  @click="exportToPNG" 
-                  :disabled="exporting"
-                  class="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-slate-600 to-slate-700 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 text-sm"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                  </svg>
-                  PNG
-                </button>
-                <button 
-                  @click="exportToPDF" 
-                  :disabled="exporting"
-                  class="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 text-sm"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                  </svg>
-                  PDF
-                </button>
-              </div>
             </div>
 
             <!-- Haftalık Program -->
-            <div ref="exportArea" class="export-content" :class="isDarkMode ? 'dark-export' : 'light-export'">
-              <div class="card-bg rounded-2xl p-4">
-                <h2 class="text-lg font-bold text-primary mb-4 flex items-center gap-2">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                  </svg>
-                  Haftalık Program
-                </h2>
-                <WeeklySchedule :schedule="scheduleResult.weeklySchedule" :isDarkMode="isDarkMode" />
-              </div>
+            <div class="card-bg rounded-2xl p-4">
+              <h2 class="text-lg font-bold text-primary mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Haftalık Program
+              </h2>
+              <WeeklySchedule :schedule="scheduleResult.weeklySchedule" :isDarkMode="isDarkMode" />
+            </div>
             
             <!-- Oluşturulan Programdaki Dersler -->
             <div class="card-bg rounded-2xl p-5 animate-fade-in">
@@ -472,11 +456,48 @@
                 </div>
               </div>
             </div>
-            </div> <!-- End of export-content -->
+          </div>
+
+          <!-- Oluşturuluyor Durumu -->
+          <div v-else-if="generating" class="flex-1 flex flex-col items-center justify-center text-center px-6">
+            <div class="generating-animation mb-8">
+              <!-- Animated Calendar Icon -->
+              <div class="calendar-container">
+                <div class="calendar-icon">
+                  <svg class="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+                <!-- Floating Elements -->
+                <div class="floating-element el-1">📚</div>
+                <div class="floating-element el-2">🔬</div>
+                <div class="floating-element el-3">✏️</div>
+                <div class="floating-element el-4">📅</div>
+              </div>
+              
+              <!-- Progress Bar -->
+              <div class="progress-container mt-8">
+                <div class="progress-bar">
+                  <div class="progress-fill"></div>
+                </div>
+              </div>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-primary mb-2 animate-pulse">Program Oluşturuluyor...</h3>
+            <p class="text-secondary text-base max-w-sm">
+              En uygun ders programı hesaplanıyor, lütfen bekleyin
+            </p>
+            
+            <!-- Loading dots -->
+            <div class="flex gap-2 mt-6">
+              <span class="loading-dot"></span>
+              <span class="loading-dot" style="animation-delay: 0.2s"></span>
+              <span class="loading-dot" style="animation-delay: 0.4s"></span>
+            </div>
           </div>
 
           <!-- Boş Durum -->
-          <div v-else-if="!generating" class="flex-1 flex flex-col items-center justify-center text-center px-6">
+          <div v-else class="flex-1 flex flex-col items-center justify-center text-center px-6">
             <div class="w-24 h-24 mb-6 rounded-3xl empty-icon flex items-center justify-center animate-float">
               <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -500,17 +521,54 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { courseApi } from './api/courseApi'
 import WeeklySchedule from './components/WeeklySchedule.vue'
-import html2canvas from 'html2canvas'
-import jsPDF from 'jspdf'
 
 // Theme & Mobile
 const isDarkMode = ref(true)
 const mobileMenuOpen = ref(false)
-const exportArea = ref(null)
-const exporting = ref(false)
+
+// Active Users WebSocket
+const activeUserCount = ref(0)
+let websocket = null
+
+const connectWebSocket = () => {
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+  const wsUrl = `${protocol}//${window.location.host}/ws/active-users`
+  
+  websocket = new WebSocket(wsUrl)
+  
+  websocket.onopen = () => {
+    console.log('WebSocket connected')
+    // Send ping every 30 seconds to keep connection alive
+    setInterval(() => {
+      if (websocket && websocket.readyState === WebSocket.OPEN) {
+        websocket.send('ping')
+      }
+    }, 30000)
+  }
+  
+  websocket.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data)
+      if (data.type === 'activeUsers') {
+        activeUserCount.value = data.count
+      }
+    } catch (e) {
+      // Ignore pong messages
+    }
+  }
+  
+  websocket.onclose = () => {
+    console.log('WebSocket disconnected, reconnecting...')
+    setTimeout(connectWebSocket, 3000)
+  }
+  
+  websocket.onerror = (error) => {
+    console.error('WebSocket error:', error)
+  }
+}
 
 const toggleTheme = () => {
   isDarkMode.value = !isDarkMode.value
@@ -847,175 +905,19 @@ const generateSchedule = async () => {
   }
 }
 
-// Export Functions - Tüm computed stilleri inline'a çevir
-const applyInlineStyles = (original, cloned) => {
-  const computed = window.getComputedStyle(original)
-  
-  // Önemli CSS özelliklerini kopyala
-  const props = [
-    'background', 'backgroundColor', 'backgroundImage',
-    'color', 'fontSize', 'fontWeight', 'fontFamily',
-    'padding', 'margin', 'border', 'borderRadius', 'borderColor',
-    'boxShadow', 'textShadow', 'opacity',
-    'display', 'flexDirection', 'alignItems', 'justifyContent', 'gap',
-    'gridTemplateColumns', 'gridTemplateRows',
-    'position', 'top', 'left', 'right', 'bottom',
-    'width', 'height', 'minHeight', 'maxWidth',
-    'overflow', 'textOverflow', 'whiteSpace',
-    'letterSpacing', 'lineHeight', 'textAlign', 'textTransform'
-  ]
-  
-  props.forEach(prop => {
-    try {
-      const value = computed.getPropertyValue(prop.replace(/([A-Z])/g, '-$1').toLowerCase())
-      if (value && value !== 'none' && value !== 'normal' && value !== 'auto') {
-        cloned.style[prop] = value
-      }
-    } catch (e) {}
-  })
-}
-
-const resolveAllStyles = (originalElement, clonedElement) => {
-  // Ana element
-  applyInlineStyles(originalElement, clonedElement)
-  
-  // Tüm child elementler
-  const originalChildren = originalElement.querySelectorAll('*')
-  const clonedChildren = clonedElement.querySelectorAll('*')
-  
-  originalChildren.forEach((orig, i) => {
-    if (clonedChildren[i]) {
-      applyInlineStyles(orig, clonedChildren[i])
-    }
-  })
-}
-
-const exportToPNG = async () => {
-  if (!exportArea.value || exporting.value) return
-  exporting.value = true
-  
-  try {
-    const element = exportArea.value
-    
-    // Kısa bir gecikme ekle - tüm stillerin yüklenmesini bekle
-    await new Promise(resolve => setTimeout(resolve, 100))
-    
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: isDarkMode.value ? '#0f172a' : '#f1f5f9',
-      logging: false,
-      onclone: (clonedDoc) => {
-        const clonedElement = clonedDoc.querySelector('.export-content')
-        if (clonedElement && element) {
-          resolveAllStyles(element, clonedElement)
-        }
-      }
-    })
-    
-    const link = document.createElement('a')
-    link.download = `ders-programi-${new Date().toLocaleDateString('tr-TR').replace(/\./g, '-')}.png`
-    link.href = canvas.toDataURL('image/png')
-    link.click()
-  } catch (e) {
-    error.value = 'PNG oluşturulurken hata: ' + e.message
-    console.error('PNG Export Error:', e)
-  } finally {
-    exporting.value = false
-  }
-}
-
-const exportToPDF = async () => {
-  if (!exportArea.value || exporting.value) return
-  exporting.value = true
-  
-  try {
-    const element = exportArea.value
-    
-    // Kısa bir gecikme ekle
-    await new Promise(resolve => setTimeout(resolve, 100))
-    
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: isDarkMode.value ? '#0f172a' : '#f1f5f9',
-      logging: false,
-      windowWidth: element.scrollWidth,
-      windowHeight: element.scrollHeight,
-      onclone: (clonedDoc) => {
-        const clonedElement = clonedDoc.querySelector('.export-content')
-        if (clonedElement && element) {
-          resolveAllStyles(element, clonedElement)
-        }
-      }
-    })
-    
-    const imgData = canvas.toDataURL('image/png', 1.0)
-    const imgWidth = canvas.width
-    const imgHeight = canvas.height
-    
-    // Calculate aspect ratio
-    const aspectRatio = imgWidth / imgHeight
-    
-    // Use A4 landscape or portrait based on content
-    let pdfWidth, pdfHeight, orientation
-    
-    if (aspectRatio > 1) {
-      // Landscape
-      orientation = 'landscape'
-      pdfWidth = 297
-      pdfHeight = 210
-    } else {
-      // Portrait
-      orientation = 'portrait'
-      pdfWidth = 210
-      pdfHeight = 297
-    }
-    
-    // Calculate image dimensions to fit the page with margins
-    const margin = 10
-    const maxWidth = pdfWidth - (margin * 2)
-    const maxHeight = pdfHeight - (margin * 2)
-    
-    let finalWidth = maxWidth
-    let finalHeight = finalWidth / aspectRatio
-    
-    // If height exceeds page, scale down
-    if (finalHeight > maxHeight) {
-      finalHeight = maxHeight
-      finalWidth = finalHeight * aspectRatio
-    }
-    
-    // Center the image
-    const xOffset = (pdfWidth - finalWidth) / 2
-    const yOffset = (pdfHeight - finalHeight) / 2
-    
-    const pdf = new jsPDF({
-      orientation: orientation,
-      unit: 'mm',
-      format: 'a4'
-    })
-    
-    // Add the schedule image (header is already in the image)
-    pdf.addImage(imgData, 'PNG', xOffset, yOffset, finalWidth, finalHeight)
-    
-    pdf.save(`ders-programi-${new Date().toLocaleDateString('tr-TR').replace(/\./g, '-')}.pdf`)
-  } catch (e) {
-    error.value = 'PDF oluşturulurken hata: ' + e.message
-    console.error('PDF Export Error:', e)
-  } finally {
-    exporting.value = false
-  }
-}
-
 // Lifecycle
 onMounted(() => {
   const savedTheme = localStorage.getItem('theme')
   isDarkMode.value = savedTheme !== 'light'
   loadSeasons()
   loadDepartments()
+  connectWebSocket()
+})
+
+onUnmounted(() => {
+  if (websocket) {
+    websocket.close()
+  }
 })
 </script>
 
@@ -1116,6 +1018,25 @@ onMounted(() => {
 .toggle-btn { 
   background-color: var(--bg-tertiary); 
   border: 1px solid var(--border-color);
+}
+
+/* Active Users Badge */
+.active-users-badge {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.dark-theme .active-users-badge {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.light-theme .active-users-badge {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 /* Season Badge */
@@ -1305,6 +1226,119 @@ onMounted(() => {
   color: var(--empty-icon-color);
 }
 
+/* Generating Animation */
+.generating-animation {
+  position: relative;
+}
+
+.calendar-container {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  animation: calendar-pulse 2s ease-in-out infinite;
+  box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+}
+
+@keyframes calendar-pulse {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg); 
+    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+  }
+  50% { 
+    transform: scale(1.1) rotate(3deg); 
+    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.6);
+  }
+}
+
+.floating-element {
+  position: absolute;
+  font-size: 24px;
+  animation: float-around 3s ease-in-out infinite;
+}
+
+.el-1 { top: 0; left: 20%; animation-delay: 0s; }
+.el-2 { top: 20%; right: 0; animation-delay: 0.5s; }
+.el-3 { bottom: 0; left: 30%; animation-delay: 1s; }
+.el-4 { top: 40%; left: 0; animation-delay: 1.5s; }
+
+@keyframes float-around {
+  0%, 100% { 
+    transform: translateY(0) scale(1); 
+    opacity: 0.7;
+  }
+  50% { 
+    transform: translateY(-15px) scale(1.2); 
+    opacity: 1;
+  }
+}
+
+.progress-container {
+  width: 200px;
+}
+
+.progress-bar {
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue), var(--accent-purple));
+  background-size: 200% 100%;
+  animation: progress-move 1.5s ease-in-out infinite;
+  border-radius: 3px;
+}
+
+@keyframes progress-move {
+  0% { 
+    width: 0%; 
+    background-position: 0% 0%;
+  }
+  50% { 
+    width: 70%; 
+    background-position: 100% 0%;
+  }
+  100% { 
+    width: 100%; 
+    background-position: 0% 0%;
+  }
+}
+
+.loading-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+  animation: dot-bounce 1.4s ease-in-out infinite both;
+}
+
+@keyframes dot-bounce {
+  0%, 80%, 100% { 
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* Course Detail Cards */
 .course-detail-card {
   background: var(--bg-secondary);
@@ -1420,24 +1454,6 @@ onMounted(() => {
 .animate-shake { animation: shake 0.4s ease-out; }
 .animate-check { animation: check 0.2s ease-out forwards; }
 .animate-float { animation: float 3s ease-in-out infinite; }
-
-/* ===== EXPORT CONTENT ===== */
-.export-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 1rem;
-}
-
-.dark-export {
-  background-color: #0f172a;
-}
-
-.light-export {
-  background-color: #f1f5f9;
-}
-
 
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
