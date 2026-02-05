@@ -1,48 +1,111 @@
-# Ders Programı Planlayıcı - Yeditepe Üniversitesi
+<div align="center">
 
-Yeditepe Üniversitesi öğrencileri için çakışmasız ders programı oluşturucu. Bu uygulama, seçtiğiniz dersler için en optimal haftalık programı otomatik olarak oluşturur.
+# 📚 Ders Programı Planlayıcı
 
-## Özellikler
+### Yeditepe Üniversitesi için Akıllı Ders Çizelgesi Oluşturucu
 
-- **Otomatik Yetkilendirme**: Backend otomatik olarak Yeditepe API'sine login olur ve token yönetimini yapar
-- **Token Yenileme**: Token süresi dolduğunda otomatik olarak yeni token alır
-- **Dönem Seçimi**: Aktif ve geçmiş dönemler arasından seçim yapabilirsiniz
-- **Ders Arama**: Bölüm derslerini listeler ve arama yapmanızı sağlar
-- **Çakışma Kontrolü**: Seçilen dersler arasında çakışma olup olmadığını kontrol eder
-- **Optimal Program**: Birden fazla section varsa en az boşluklu programı seçer
-- **Haftalık Görünüm**: Oluşturulan programı görsel olarak gösterir
+[![Java](https://img.shields.io/badge/Java-11-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.7-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)](https://vuejs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
-## Teknolojiler
+<br>
 
-### Backend
-- Java 11
-- Spring Boot 2.7
-- Maven
+<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Calendar.png" alt="Calendar" width="150" />
 
-### Frontend
-- Vue.js 3
-- Vite
-- Tailwind CSS
-- Axios
+**Çakışmasız, optimal ders programını saniyeler içinde oluşturun!**
 
-## Kurulum
+[🚀 Demo](#demo) • [✨ Özellikler](#-özellikler) • [🛠️ Kurulum](#️-kurulum) • [☁️ Deploy](#️-ücretsiz-deploy)
 
-### Backend
+</div>
+
+---
+
+## 🎯 Ne İşe Yarar?
+
+Bu uygulama, Yeditepe Üniversitesi öğrencilerinin ders programı oluşturma sürecini **otomatikleştirir**. Manuel olarak saatlerce uğraşmak yerine:
+
+```
+1️⃣ Derslerini seç
+2️⃣ "Program Oluştur" tıkla  
+3️⃣ En optimal program hazır! ✅
+```
+
+---
+
+## ✨ Özellikler
+
+<table>
+<tr>
+<td width="50%">
+
+### 🔐 Otomatik Yetkilendirme
+Backend otomatik olarak Yeditepe API'sine bağlanır, token yönetimini yapar
+
+### 📅 Dönem Seçimi
+Aktif ve geçmiş dönemler arasından kolayca seçim
+
+### 🔍 Akıllı Arama
+Bölüm derslerini listele, filtrele ve ara
+
+</td>
+<td width="50%">
+
+### ⚡ Çakışma Kontrolü
+Seçilen dersler arasında çakışma analizi
+
+### 🎯 Optimal Algoritma
+En az boşluklu, en verimli programı otomatik seç
+
+### 📊 Görsel Program
+Haftalık görünümde şık tasarım
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🧠 Akıllı Algoritma
+
+Program oluşturulurken şu kriterlere göre **en iyi kombinasyon** seçilir:
+
+| Öncelik | Kriter | Açıklama |
+|:-------:|--------|----------|
+| 🥇 | **Çakışma Yok** | Dersler arasında zaman çakışması olmamalı |
+| 🥈 | **Az Boşluk** | Dersler arası boş saatleri minimize et |
+| 🥉 | **Az Gün** | Dersleri mümkün olduğunca az güne sığdır |
+| 🏅 | **Geç Başla** | Sabah 08:00 derslerinden kaçın 😴 |
+
+---
+
+## 🛠️ Kurulum
+
+### Gereksinimler
+
+```
+📦 Java 11+
+📦 Node.js 18+
+📦 Maven 3.8+
+```
+
+### ⚡ Hızlı Başlangıç
+
+<details>
+<summary><b>🖥️ Backend</b></summary>
 
 ```bash
 cd backend
 ./mvnw spring-boot:run
 ```
 
-Backend `http://localhost:8080` adresinde çalışacaktır.
+> 🌐 Backend: `http://localhost:8080`
 
-**Not:** Yetkilendirme bilgileri `application.properties` dosyasında saklanır:
-```properties
-yeditepe.auth.username=YOUR_USERNAME
-yeditepe.auth.password=YOUR_PASSWORD
-```
+</details>
 
-### Frontend
+<details>
+<summary><b>🎨 Frontend</b></summary>
 
 ```bash
 cd frontend
@@ -50,111 +113,158 @@ npm install
 npm run dev
 ```
 
-Frontend `http://localhost:5173` adresinde çalışacaktır.
+> 🌐 Frontend: `http://localhost:5173`
 
-## Kullanım
+</details>
 
-1. Uygulamayı açın (`http://localhost:5173`)
-2. Dönem seçin (aktif dönem otomatik seçilir)
-3. Bölüm ID girin (Bilgisayar Mühendisliği: 11172)
-4. "Dersleri Getir" butonuna tıklayın
-5. Almak istediğiniz dersleri seçin veya manuel olarak ders kodlarını girin
-6. "Program Oluştur" butonuna tıklayın
-7. Sistem çakışmasız en optimal programı oluşturacaktır
+---
 
-## API Endpoints
+## ☁️ Ücretsiz Deploy
 
-### Backend API
+<div align="center">
 
-| Endpoint | Method | Açıklama |
-|----------|--------|----------|
-| `/api/seasons` | GET | Akademik dönemleri listeler |
-| `/api/courses/{seasonId}/{departmentId}` | GET | Döneme ait dersleri listeler |
-| `/api/schedule/generate` | POST | Ders programı oluşturur |
+### 🚀 Render.com ile Tek Tıkla Deploy
 
-### Schedule Generate Request Body
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
-```json
-{
-  "seasonId": 139,
-  "departmentId": 11172,
-  "courseCodes": ["CSE 311", "CSE 344", "CSE 348", "CSE 471"]
-}
-```
+</div>
 
-## Optimal Program Algoritması
+### 📝 Adım Adım
 
-Sistem şu kriterlere göre en iyi programı seçer:
-1. **Çakışma yok**: Seçilen dersler arasında zaman çakışması olmamalı
-2. **Az boşluk**: Günler arası ve gün içi boşlukları minimize eder
-3. **Az gün**: Mümkünse dersleri daha az güne sıkıştırır
-4. **Geç başlangıç**: Sabah erken dersleri penalize eder
-
-## Bölüm ID'leri
-
-Bazı bölüm ID'leri:
-- Bilgisayar Mühendisliği: 11172
-
-## Notlar
-
-- Bu uygulama resmi bir Yeditepe uygulaması değildir
-- Veriler Yeditepe Üniversitesi API'lerinden çekilmektedir
-- Veritabanı kullanılmamaktadır, tüm veriler API'den anlık olarak alınır
-- Token süresi dolduğunda backend otomatik olarak yeniden login olur
-
-## Ücretsiz Canlıya Alma (Deploy)
-
-Bu projeyi **Render.com** üzerinde ücretsiz olarak canlıya alabilirsiniz. Frontend ve Backend tek sunucuda çalışır.
-
-### Adım 1: GitHub'a Yükle
+<details>
+<summary><b>1️⃣ GitHub'a Yükle</b></summary>
 
 ```bash
-# Proje klasöründe
 git init
 git add .
 git commit -m "Initial commit"
-
-# GitHub'da yeni repo oluşturun, sonra:
-git remote add origin https://github.com/KULLANICI_ADINIZ/course-selector.git
-git branch -M main
+git remote add origin https://github.com/KULLANICI/course-selector.git
 git push -u origin main
 ```
 
-### Adım 2: Render.com'da Deploy
+</details>
 
-1. [render.com](https://render.com) adresine gidin ve GitHub ile giriş yapın
-2. Dashboard'da **"New +"** → **"Web Service"** seçin
-3. GitHub reponuzu bağlayın ve `course-selector` reposunu seçin
+<details>
+<summary><b>2️⃣ Render.com'da Deploy</b></summary>
+
+1. [render.com](https://render.com) → GitHub ile giriş
+2. **"New +"** → **"Web Service"**
+3. Repoyu seç: `course-selector`
 4. Ayarlar:
-   - **Name**: `course-selector` (veya istediğiniz isim)
    - **Runtime**: `Docker`
    - **Plan**: `Free`
-5. **Environment Variables** bölümünde ekleyin:
-   - `YEDITEPE_USERNAME` = Yeditepe öğrenci numaranız (U ile başlayan)
-   - `YEDITEPE_PASSWORD` = Şifreniz
-6. **"Create Web Service"** butonuna tıklayın
+5. **Environment Variables**:
+   ```
+   YEDITEPE_USERNAME = U20xxxxxxxxx
+   YEDITEPE_PASSWORD = ************
+   ```
+6. **"Create Web Service"** 🎉
 
-### Adım 3: Bekleyin
+</details>
 
-İlk deploy 5-10 dakika sürebilir. Tamamlandığında size bir URL verilecek:
-`https://course-selector-xxxx.onrender.com`
+<details>
+<summary><b>3️⃣ Bekle & Paylaş</b></summary>
 
-### Önemli Notlar
+⏱️ İlk deploy **5-10 dakika** sürer
 
-- **Ücretsiz plan sınırlaması**: 15 dakika kullanılmazsa uygulama "uyku" moduna geçer. İlk isteğinizde ~30 saniye uyanma süresi olabilir.
-- **Aylık limit**: Ücretsiz planda aylık 750 saat çalışma süresi var (yeterli).
-- **URL paylaşımı**: Verilen URL'yi istediğiniz kişiyle paylaşabilirsiniz.
+✅ Tamamlandığında URL'in hazır:
+```
+https://course-selector-xxxx.onrender.com
+```
 
-### Alternatif: Railway.app
+📤 Bu linki istediğin kişiyle paylaş!
 
-Railway.com da ücretsiz deploy seçeneği sunar:
+</details>
 
-1. [railway.app](https://railway.app) adresine gidin
-2. GitHub ile giriş yapın
-3. **"New Project"** → **"Deploy from GitHub repo"**
-4. Reponuzu seçin ve environment variable'ları ekleyin
-5. Deploy otomatik başlayacaktır
+### ⚠️ Ücretsiz Plan Hakkında
 
-## Lisans
+| | |
+|---|---|
+| 💤 | 15 dk kullanılmazsa uyku moduna geçer |
+| ⏰ | İlk istekte ~30 saniye uyanma süresi |
+| ✅ | Aylık 750 saat ücretsiz (yeterli!) |
 
-MIT
+---
+
+## 🔌 API Endpoints
+
+```http
+GET  /api/seasons                           # Dönemleri listele
+GET  /api/departments                       # Bölümleri listele  
+GET  /api/courses/{seasonId}/{departmentId} # Dersleri getir
+POST /api/schedule/generate                 # Program oluştur
+```
+
+<details>
+<summary><b>📤 Örnek Request</b></summary>
+
+```json
+POST /api/schedule/generate
+
+{
+  "seasonId": 139,
+  "departmentId": 11172,
+  "courseCodes": ["CSE 311", "CSE 344", "CSE 348"]
+}
+```
+
+</details>
+
+---
+
+## 🏫 Bazı Bölüm ID'leri
+
+| Bölüm | ID |
+|-------|---:|
+| Bilgisayar Mühendisliği | `11172` |
+| Elektrik-Elektronik Müh. | `11171` |
+| Endüstri Mühendisliği | `11173` |
+
+---
+
+## 📸 Ekran Görüntüleri
+
+<div align="center">
+
+| Ders Seçimi | Haftalık Program |
+|:-----------:|:----------------:|
+| ![Ders Seçimi](https://via.placeholder.com/400x250/4FC08D/FFFFFF?text=Ders+Secimi) | ![Program](https://via.placeholder.com/400x250/6DB33F/FFFFFF?text=Haftalik+Program) |
+
+</div>
+
+---
+
+## ⚠️ Notlar
+
+> [!NOTE]
+> Bu uygulama resmi bir Yeditepe uygulaması değildir.
+
+> [!IMPORTANT]
+> Veriler Yeditepe Üniversitesi API'lerinden anlık olarak çekilir.
+
+> [!TIP]
+> Token süresi dolduğunda backend otomatik olarak yeniden login olur.
+
+---
+
+<div align="center">
+
+## 🤝 Katkıda Bulun
+
+Pull request'ler memnuniyetle karşılanır!
+
+---
+
+### ⭐ Beğendiysen yıldız atmayı unutma!
+
+<br>
+
+[![GitHub stars](https://img.shields.io/github/stars/miracckms/course-selector?style=social)](https://github.com/miracckms/course-selector)
+
+---
+
+**MIT License** • Made with ❤️ for Yeditepe Students
+
+<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Waving%20Hand.png" alt="Wave" width="30" />
+
+</div>
