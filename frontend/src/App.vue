@@ -141,7 +141,7 @@
               <input 
                 v-model="courseSearch"
                 type="text"
-                placeholder="Ders ara..."
+                placeholder="Ders kodu, adı veya hoca ara..."
                 class="w-full px-3 py-2 input-bg rounded-xl text-primary placeholder-secondary text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all duration-200"
               />
               <div class="space-y-1 pr-1">
@@ -672,11 +672,22 @@ const groupedCourses = computed(() => {
 const filteredCourses = computed(() => {
   if (!courseSearch.value) return groupedCourses.value
   const search = courseSearch.value.toLowerCase().replace(/\s+/g, '')
+  const searchLower = courseSearch.value.toLowerCase()
+  
   return groupedCourses.value.filter(c => {
     const codeNoSpace = c.code.toLowerCase().replace(/\s+/g, '')
-    return codeNoSpace.includes(search) || 
-           c.code.toLowerCase().includes(courseSearch.value.toLowerCase()) ||
-           c.name?.toLowerCase().includes(courseSearch.value.toLowerCase())
+    
+    // Ders kodu veya adıyla eşleşme
+    const matchesCode = codeNoSpace.includes(search) || 
+                        c.code.toLowerCase().includes(searchLower)
+    const matchesName = c.name?.toLowerCase().includes(searchLower)
+    
+    // Hoca adıyla eşleşme - tüm section'lardaki hocaları kontrol et
+    const matchesInstructor = c.sections.some(section => 
+      section.instructor?.toLowerCase().includes(searchLower)
+    )
+    
+    return matchesCode || matchesName || matchesInstructor
   })
 })
 
