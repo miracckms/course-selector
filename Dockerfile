@@ -7,7 +7,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Stage 2: Build Backend
-FROM maven:3.8-openjdk-11 AS backend-build
+FROM maven:3.9-eclipse-temurin-11 AS backend-build
 WORKDIR /app
 COPY backend/pom.xml ./
 COPY backend/src ./src
@@ -18,7 +18,7 @@ COPY --from=frontend-build /app/frontend/dist ./src/main/resources/static
 RUN mvn clean package -DskipTests
 
 # Stage 3: Run
-FROM openjdk:11-jre-slim
+FROM eclipse-temurin:11-jre-alpine
 WORKDIR /app
 COPY --from=backend-build /app/target/*.jar app.jar
 
