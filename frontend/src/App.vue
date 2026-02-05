@@ -320,6 +320,28 @@
           <!-- Sonuç -->
           <div v-if="scheduleResult && scheduleResult.success" class="flex-1 overflow-auto p-4 space-y-4">
             
+            <!-- Çakışma Uyarısı -->
+            <div v-if="scheduleResult.hasOverlap" 
+                 class="p-4 rounded-xl bg-gradient-to-r from-yellow-500/20 to-amber-500/20 border border-yellow-500/50 animate-fade-in">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <h3 class="font-bold text-yellow-400 mb-1">⚠️ Çakışma Uyarısı</h3>
+                  <p class="text-sm text-secondary">
+                    Programda <span class="font-bold text-yellow-300">{{ scheduleResult.overlapMinutes }} dakikalık</span> çakışma var. 
+                    Bu derslerin saatlerine dikkat edin!
+                  </p>
+                  <p class="text-xs text-secondary mt-2 opacity-75">
+                    💡 İpucu: En fazla 1 saatlik çakışma kabul edilir. Çakışan derslerin bir kısmına katılamayabilirsiniz.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
             <!-- Kısmi Çözüm Uyarısı -->
             <div v-if="scheduleResult.excludedCourses && scheduleResult.excludedCourses.length > 0" 
                  class="p-4 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/50 animate-fade-in">
@@ -359,6 +381,10 @@
               <div class="stat-card stat-orange">
                 <span class="text-2xl font-bold">{{ scheduleResult.metrics?.totalGaps }}<span class="text-sm">dk</span></span>
                 <span class="text-xs opacity-90">Boşluk</span>
+              </div>
+              <div v-if="scheduleResult.hasOverlap" class="stat-card stat-red">
+                <span class="text-2xl font-bold">{{ scheduleResult.overlapMinutes }}<span class="text-sm">dk</span></span>
+                <span class="text-xs opacity-90">Çakışma ⚠️</span>
               </div>
               
               <!-- Program Başlığı -->
@@ -1076,6 +1102,7 @@ onUnmounted(() => {
 .stat-purple { background: var(--stat-purple); }
 .stat-green { background: var(--stat-green); }
 .stat-orange { background: var(--stat-orange); }
+.stat-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
 
 /* Course Items */
 .course-item {
