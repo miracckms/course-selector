@@ -1,92 +1,163 @@
 <template>
   <div class="weekly-schedule" :class="isDarkMode ? 'dark' : 'light'">
-    <!-- Grid -->
-    <div class="grid" :style="{ gridTemplateColumns: `80px repeat(${days.length}, 1fr)` }">
-      <!-- Header -->
-      <div class="schedule-header-corner"></div>
-      <div 
-        v-for="day in days" 
-        :key="day" 
-        class="schedule-header-cell"
-      >
-        {{ day }}
-      </div>
-
-      <!-- Time Rows -->
-      <!-- eslint-disable-next-line vue/no-v-for-template-key -->
-      <template v-for="hour in hours" :key="hour">
-        <div class="schedule-time-cell">
-          {{ formatHour(hour) }}
-        </div>
-        <div 
-          v-for="(day, dayIdx) in days" 
-          :key="`${hour}-${day}`"
-          class="schedule-cell"
+    
+    <!-- ===== MOBILE VIEW: Daily ===== -->
+    <div class="mobile-view sm:hidden">
+      <!-- Day Selector Tabs -->
+      <div class="day-tabs">
+        <button 
+          v-for="(day, idx) in days" 
+          :key="day"
+          @click="selectedDay = idx"
+          class="day-tab"
+          :class="{ active: selectedDay === idx, 'has-courses': getDayCoursesCount(idx) > 0 }"
         >
+          <span class="day-name">{{ day }}</span>
+          <span v-if="getDayCoursesCount(idx) > 0" class="day-count">{{ getDayCoursesCount(idx) }}</span>
+        </button>
+      </div>
+      
+      <!-- Daily Schedule -->
+      <div class="daily-schedule">
+        <div v-if="getDayCoursesCount(selectedDay) === 0" class="no-courses-day">
+          <span class="text-4xl mb-2">📅</span>
+          <p>{{ $t('noCoursesThisDay') || 'Bu gün ders yok' }}</p>
+        </div>
+        
+        <div v-else class="daily-courses">
           <div 
-            v-for="course in getCoursesAt(dayIdx, hour)" 
-            :key="`${course.courseCode}-${course.startHour}-${course.type}`"
-            class="course-card"
-            :class="[getCourseColor(course), { 'has-conflict': hasConflict(dayIdx, course) }]"
-            :style="{ height: `${getHeight(course)}px` }"
+            v-for="course in getDayCourses(selectedDay)" 
+            :key="`${course.courseCode}-${course.startHour}`"
+            class="daily-course-card"
+            :class="getCourseColor(course)"
           >
-            <div class="course-content">
-              <!-- Course Code -->
-              <div class="course-code">{{ course.courseCode }}</div>
-              
-              <!-- Type Badge -->
-              <div class="course-type-badge" :class="getTypeBadgeClass(course.type)">
-                {{ getTypeTurkish(course.type) }}
-              </div>
-              
-              <!-- Time -->
-              <div class="course-time">
-                {{ course.startHour }} - {{ course.endHour }}
-              </div>
-              
-              <!-- Instructor -->
-              <div class="course-instructor" v-if="course.instructor && getHeight(course) > 70">
-                {{ formatInstructor(course.instructor) }}
+            <div class="daily-course-time">
+              <span class="time-start">{{ course.startHour }}</span>
+              <span class="time-separator">-</span>
+              <span class="time-end">{{ course.endHour }}</span>
+            </div>
+            <div class="daily-course-info">
+              <div class="daily-course-code">{{ course.courseCode }}</div>
+              <div class="daily-course-type">{{ getTypeTurkish(course.type) }}</div>
+              <div v-if="course.instructor" class="daily-course-instructor">
+                {{ course.instructor }}
               </div>
             </div>
-            
-            <!-- Conflict indicator -->
-            <div v-if="hasConflict(dayIdx, course)" class="conflict-badge" title="Çakışma var!">
-              <span>!</span>
-            </div>
+            <div v-if="hasConflict(selectedDay, course)" class="daily-conflict-badge">!</div>
           </div>
         </div>
-      </template>
+      </div>
+      
+      <!-- Mobile Legend -->
+      <div class="legend mobile-legend">
+        <div class="legend-item">
+          <span class="legend-dot course-blue"></span>
+          <span>{{ $t('legend.lecture') }}</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot course-emerald"></span>
+          <span>{{ $t('legend.lab') }}</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot course-purple"></span>
+          <span>{{ $t('legend.ps') }}</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot course-orange"></span>
+          <span>{{ $t('legend.other') }}</span>
+        </div>
+        <div class="legend-item conflict">
+          <span class="legend-dot bg-red-500"></span>
+          <span>{{ $t('legend.conflict') }}</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Legend -->
-    <div class="legend">
-      <div class="legend-item">
-        <span class="legend-dot course-blue"></span>
-        <span>Teorik</span>
+    <!-- ===== DESKTOP VIEW: Weekly Grid ===== -->
+    <div class="desktop-view hidden sm:block">
+      <div class="schedule-container">
+        <div class="weekly-grid" :style="{ gridTemplateColumns: `60px repeat(${days.length}, 1fr)` }">
+          <!-- Header -->
+          <div class="schedule-header-corner"></div>
+          <div 
+            v-for="day in days" 
+            :key="day" 
+            class="schedule-header-cell"
+          >
+            {{ day }}
+          </div>
+
+          <!-- Time Rows -->
+          <!-- eslint-disable-next-line vue/no-v-for-template-key -->
+          <template v-for="hour in hours" :key="hour">
+            <div class="schedule-time-cell">
+              {{ formatHour(hour) }}
+            </div>
+            <div 
+              v-for="(day, dayIdx) in days" 
+              :key="`${hour}-${day}`"
+              class="schedule-cell"
+            >
+              <div 
+                v-for="course in getCoursesAt(dayIdx, hour)" 
+                :key="`${course.courseCode}-${course.startHour}-${course.type}`"
+                class="course-card"
+                :class="[getCourseColor(course), { 'has-conflict': hasConflict(dayIdx, course) }]"
+                :style="{ height: `${getHeight(course)}px` }"
+              >
+                <div class="course-content">
+                  <div class="course-code">{{ course.courseCode }}</div>
+                  <div class="course-type-badge">
+                    {{ getTypeTurkish(course.type) }}
+                  </div>
+                  <div class="course-time">
+                    {{ course.startHour }} - {{ course.endHour }}
+                  </div>
+                  <div class="course-instructor" v-if="course.instructor && getHeight(course) > 70">
+                    {{ course.instructor }}
+                  </div>
+                </div>
+                <div v-if="hasConflict(dayIdx, course)" class="conflict-badge" :title="$t('conflictWarning')">
+                  <span>!</span>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
       </div>
-      <div class="legend-item">
-        <span class="legend-dot course-emerald"></span>
-        <span>Lab</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-dot course-purple"></span>
-        <span>PS</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-dot course-orange"></span>
-        <span>Diğer</span>
-      </div>
-      <div class="legend-item conflict">
-        <span class="legend-dot bg-red-500"></span>
-        <span>Çakışma</span>
+
+      <!-- Desktop Legend -->
+      <div class="legend">
+        <div class="legend-item">
+          <span class="legend-dot course-blue"></span>
+          <span>{{ $t('legend.lecture') }}</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot course-emerald"></span>
+          <span>{{ $t('legend.lab') }}</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot course-purple"></span>
+          <span>{{ $t('legend.ps') }}</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot course-orange"></span>
+          <span>{{ $t('legend.other') }}</span>
+        </div>
+        <div class="legend-item conflict">
+          <span class="legend-dot bg-red-500"></span>
+          <span>{{ $t('legend.conflict') }}</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   schedule: {
@@ -96,10 +167,27 @@ const props = defineProps({
   isDarkMode: {
     type: Boolean,
     default: false
+  },
+  locale: {
+    type: String,
+    default: 'tr'
   }
 })
 
-const days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum']
+// ===== SHARED STATE =====
+const selectedDay = ref(0) // Selected day for mobile view (0 = Monday)
+
+const days = computed(() => [
+  t('daysShort.MON'),
+  t('daysShort.TUE'),
+  t('daysShort.WED'),
+  t('daysShort.THU'),
+  t('daysShort.FRI')
+])
+
+const dayMap = { 'MON': 0, 'TUE': 1, 'WED': 2, 'THU': 3, 'FRI': 4, 'SAT': 5, 'SUN': 6 }
+
+// ===== DESKTOP WEEKLY VIEW =====
 const hours = computed(() => {
   let min = 24, max = 0
   Object.values(props.schedule || {}).forEach(dayCourses => {
@@ -115,22 +203,8 @@ const hours = computed(() => {
   return Array.from({ length: endHour - startHour }, (_, i) => startHour + i)
 })
 
-const dayMap = { 'MON': 0, 'TUE': 1, 'WED': 2, 'THU': 3, 'FRI': 4, 'SAT': 5, 'SUN': 6 }
-
 const formatHour = (hour) => {
   return `${hour.toString().padStart(2, '0')}:00`
-}
-
-const formatInstructor = (name) => {
-  if (!name) return ''
-  const parts = name.split(' ')
-  if (parts.length > 2) {
-    return parts[0].charAt(0) + '. ' + parts[parts.length - 1]
-  }
-  if (parts.length === 2) {
-    return parts[0].charAt(0) + '. ' + parts[1]
-  }
-  return name
 }
 
 const getCoursesAt = (dayIdx, hour) => {
@@ -142,9 +216,32 @@ const getCoursesAt = (dayIdx, hour) => {
   })
 }
 
+const getHeight = (course) => {
+  const start = parseInt(course.startHour?.split(':')[0] || 0) * 60 + parseInt(course.startHour?.split(':')[1] || 0)
+  const end = parseInt(course.endHour?.split(':')[0] || 0) * 60 + parseInt(course.endHour?.split(':')[1] || 0)
+  const duration = end - start
+  return Math.max(70, (duration / 60) * 70 - 4)
+}
+
+// ===== SHARED FUNCTIONS =====
 const getAllCoursesForDay = (dayIdx) => {
   const dayKey = Object.keys(dayMap).find(k => dayMap[k] === dayIdx)
   return props.schedule?.[dayKey] || []
+}
+
+// Get all courses for a day sorted by start time (for mobile view)
+const getDayCourses = (dayIdx) => {
+  const courses = getAllCoursesForDay(dayIdx)
+  return [...courses].sort((a, b) => {
+    const timeA = parseInt(a.startHour?.replace(':', '') || 0)
+    const timeB = parseInt(b.startHour?.replace(':', '') || 0)
+    return timeA - timeB
+  })
+}
+
+// Get course count for a day (for mobile tabs)
+const getDayCoursesCount = (dayIdx) => {
+  return getAllCoursesForDay(dayIdx).length
 }
 
 const parseTime = (timeStr) => {
@@ -171,13 +268,6 @@ const hasConflict = (dayIdx, course) => {
   return false
 }
 
-const getHeight = (course) => {
-  const start = parseInt(course.startHour?.split(':')[0] || 0) * 60 + parseInt(course.startHour?.split(':')[1] || 0)
-  const end = parseInt(course.endHour?.split(':')[0] || 0) * 60 + parseInt(course.endHour?.split(':')[1] || 0)
-  const duration = end - start
-  return Math.max(70, (duration / 60) * 70 - 4)
-}
-
 const getCourseColor = (course) => {
   const type = (course.type || '').toUpperCase()
   if (type.includes('LEC') || type.includes('LECTURE') || type.includes('TEO')) return 'course-blue'
@@ -186,20 +276,12 @@ const getCourseColor = (course) => {
   return 'course-orange'
 }
 
-const getTypeBadgeClass = (type) => {
-  const t = (type || '').toUpperCase()
-  if (t.includes('LEC') || t.includes('LECTURE') || t.includes('TEO')) return 'badge-blue'
-  if (t.includes('LAB') || t.includes('LABOR')) return 'badge-emerald'
-  if (t.includes('PS') || t.includes('PROBLEM')) return 'badge-purple'
-  return 'badge-orange'
-}
-
 const getTypeTurkish = (type) => {
-  const t = (type || '').toUpperCase()
-  if (t.includes('LEC') || t.includes('LECTURE') || t.includes('TEO')) return 'Teorik'
-  if (t.includes('LAB') || t.includes('LABOR')) return 'Lab'
-  if (t.includes('PS') || t.includes('PROBLEM')) return 'PS'
-  return type || 'Diğer'
+  const typeStr = (type || '').toUpperCase()
+  if (typeStr.includes('LEC') || typeStr.includes('LECTURE') || typeStr.includes('TEO')) return t('typesShort.lecture')
+  if (typeStr.includes('LAB') || typeStr.includes('LABOR')) return t('typesShort.lab')
+  if (typeStr.includes('PS') || typeStr.includes('PROBLEM')) return t('typesShort.ps')
+  return type || t('typesShort.other')
 }
 </script>
 
@@ -212,11 +294,13 @@ const getTypeTurkish = (type) => {
   --border-color: #475569;
   --header-bg: #334155;
   --cell-hover: rgba(99, 102, 241, 0.1);
+  --tab-active: linear-gradient(135deg, #6366f1, #8b5cf6);
 }
 
 .weekly-schedule.light {
   --bg-secondary: #ffffff;
   --bg-tertiary: #f8fafc;
+  --tab-active: linear-gradient(135deg, #6366f1, #8b5cf6);
   --text-primary: #1e293b;
   --text-secondary: #64748b;
   --border-color: #e2e8f0;
@@ -224,7 +308,206 @@ const getTypeTurkish = (type) => {
   --cell-hover: rgba(99, 102, 241, 0.05);
 }
 
-.grid {
+/* ===== MOBILE VIEW STYLES ===== */
+.mobile-view {
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .mobile-view {
+    display: none !important;
+  }
+}
+
+@media (max-width: 639px) {
+  .mobile-view {
+    display: flex;
+  }
+  .desktop-view {
+    display: none !important;
+  }
+}
+
+/* Day Tabs */
+.day-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.day-tab {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 8px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.day-tab .day-name {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.day-tab .day-count {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(99, 102, 241, 0.15);
+  color: #6366f1;
+}
+
+.day-tab.active {
+  background: var(--tab-active);
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.day-tab.active .day-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+.day-tab.has-courses:not(.active) {
+  color: var(--text-primary);
+}
+
+/* Daily Schedule */
+.daily-schedule {
+  min-height: 200px;
+}
+
+.no-courses-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  text-align: center;
+  font-size: 14px;
+}
+
+.daily-courses {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.daily-course-card {
+  display: flex;
+  align-items: stretch;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: relative;
+}
+
+.daily-course-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 14px;
+  min-width: 70px;
+  background: rgba(0,0,0,0.1);
+  font-weight: 700;
+}
+
+.daily-course-time .time-start {
+  font-size: 14px;
+  color: inherit;
+}
+
+.daily-course-time .time-separator {
+  font-size: 10px;
+  opacity: 0.6;
+  margin: 2px 0;
+}
+
+.daily-course-time .time-end {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.daily-course-info {
+  flex: 1;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.daily-course-code {
+  font-weight: 700;
+  font-size: 14px;
+  color: inherit;
+}
+
+.daily-course-type {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.daily-course-instructor {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+.daily-conflict-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+}
+
+/* Mobile Legend */
+.mobile-legend {
+  padding: 10px 0;
+  border-top: 1px solid var(--border-color);
+  margin-top: 8px;
+}
+
+/* ===== DESKTOP VIEW STYLES - WEEKLY GRID ===== */
+/* Responsive display handled by media queries above */
+
+/* Schedule Container */
+.schedule-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.weekly-grid {
   display: grid;
   border-radius: 16px;
   overflow: hidden;
@@ -308,8 +591,8 @@ const getTypeTurkish = (type) => {
 }
 
 @keyframes pulse-conflict {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.6), 0 4px 12px rgba(0,0,0,0.2); }
-  50% { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.3), 0 4px 12px rgba(0,0,0,0.2); }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
 }
 
 .course-content {
@@ -368,8 +651,8 @@ const getTypeTurkish = (type) => {
   justify-content: center;
   font-weight: 900;
   font-size: 12px;
-  animation: bounce-badge 1s ease-in-out infinite;
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5);
+  animation: bounce-badge 1s ease-in-out infinite;
 }
 
 @keyframes bounce-badge {
@@ -395,27 +678,43 @@ const getTypeTurkish = (type) => {
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 8px;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
-  padding: 12px 20px;
+  margin-top: 12px;
+  padding: 8px 12px;
   background: var(--bg-tertiary);
-  border-radius: 12px;
+  border-radius: 8px;
+}
+
+@media (min-width: 640px) {
+  .legend {
+    gap: 20px;
+    margin-top: 20px;
+    padding: 12px 20px;
+    border-radius: 12px;
+  }
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 4px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text-secondary);
 }
 
+@media (min-width: 640px) {
+  .legend-item {
+    gap: 8px;
+    font-size: 13px;
+  }
+}
+
 .legend-item.conflict {
   color: #ef4444;
-  padding-left: 20px;
+  padding-left: 8px;
   border-left: 2px solid var(--border-color);
 }
 

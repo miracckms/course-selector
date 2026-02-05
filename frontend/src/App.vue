@@ -3,38 +3,38 @@
     <div class="h-full app-bg flex flex-col">
       
       <!-- Top Bar -->
-      <header class="header-bg border-b border-color flex-shrink-0 px-4 py-3">
+      <header class="header-bg border-b border-color flex-shrink-0 px-3 sm:px-4 py-2 sm:py-3">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+              <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
               </svg>
             </div>
             <div>
-              <h1 class="font-bold text-base text-primary">Ders Planlayıcı</h1>
-              <p class="text-xs text-secondary hidden sm:block">Yeditepe Üniversitesi</p>
+              <h1 class="font-bold text-sm sm:text-base text-primary">{{ $t('appTitle') }}</h1>
+              <p class="text-[10px] sm:text-xs text-secondary hidden sm:block">{{ $t('university') }}</p>
             </div>
           </div>
           
-          <div class="flex items-center gap-3">
-            <!-- Active Users Badge -->
-            <div v-if="activeUserCount > 0" class="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl active-users-badge">
+          <div class="flex items-center gap-1.5 sm:gap-3">
+            <!-- Active Users Badge - Hidden on mobile -->
+            <div v-if="activeUserCount > 0" class="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl active-users-badge">
               <span class="relative flex h-2.5 w-2.5">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
               </span>
-              <span class="text-sm font-medium">{{ activeUserCount }} aktif</span>
+              <span class="text-sm font-medium">{{ $t('activeUsers', { count: activeUserCount }) }}</span>
             </div>
             
-            <div v-if="activeSeason" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl season-badge">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-              <span class="text-sm font-semibold">{{ activeSeason.year }} {{ activeSeason.name }}</span>
-            </div>
+            <!-- Language Toggle -->
+            <button @click="toggleLanguage" class="w-10 h-10 sm:h-11 sm:w-auto sm:px-4 rounded-xl toggle-btn transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
+              <span class="text-lg">{{ locale === 'tr' ? '🇹🇷' : '🇬🇧' }}</span>
+              <span class="font-bold text-sm text-primary hidden sm:inline">{{ locale === 'tr' ? 'TR' : 'EN' }}</span>
+            </button>
             
-            <button @click="toggleTheme" class="p-2.5 rounded-xl toggle-btn transition-all duration-300 hover:scale-105">
+            <!-- Theme Toggle -->
+            <button @click="toggleTheme" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl toggle-btn transition-all duration-300 hover:scale-105 flex items-center justify-center">
               <svg v-if="isDarkMode" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
               </svg>
@@ -43,9 +43,13 @@
               </svg>
             </button>
             
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2.5 rounded-xl toggle-btn lg:hidden transition-transform duration-300 hover:scale-105">
-              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Mobile Menu Toggle -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="w-10 h-10 rounded-xl toggle-btn lg:hidden transition-transform duration-300 hover:scale-105 flex items-center justify-center">
+              <svg v-if="!mobileMenuOpen" class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
+              <svg v-else class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
           </div>
@@ -56,52 +60,54 @@
         <!-- Sidebar -->
         <aside 
           :class="[
-            'fixed lg:relative inset-y-0 right-0 lg:right-auto lg:left-0 z-40 w-80 sidebar-bg border-l lg:border-l-0 lg:border-r border-color transform transition-transform duration-300 lg:transform-none flex flex-col flex-shrink-0 shadow-xl lg:shadow-none',
+            'fixed lg:relative inset-0 lg:inset-auto z-40 w-full sm:w-80 lg:w-80 sidebar-bg lg:border-r border-color transform transition-transform duration-300 lg:transform-none flex flex-col flex-shrink-0 shadow-xl lg:shadow-none',
             mobileMenuOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'
           ]"
         >
           <!-- ===== TOP FIXED SECTION ===== -->
           <div class="flex-shrink-0 p-3 space-y-2 border-b border-color">
+            <!-- Mobile Header with Close Button -->
+            <div class="flex items-center justify-between lg:hidden mb-2">
+              <h2 class="text-lg font-bold text-primary">{{ $t('courses') }}</h2>
+              <button @click="mobileMenuOpen = false" class="p-2 rounded-lg toggle-btn">
+                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+            
             <!-- Aktif Dönem Card (Compact) -->
             <div class="season-card px-3 py-2 rounded-xl animate-fade-in flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
-                <span class="text-xs opacity-80">Dönem:</span>
+                <span class="text-xs opacity-80">{{ $t('semester') }}:</span>
               </div>
-              <span class="text-sm font-bold" v-if="activeSeason">{{ activeSeason.year }} {{ activeSeason.name }}</span>
+              <span class="text-sm font-bold" v-if="activeSeason">{{ activeSeason.year }} {{ getLocalizedName(activeSeason) }}</span>
             </div>
             
             <!-- Bölüm Seçimi -->
-            <div class="space-y-1">
+            <div class="space-y-1 relative">
               <select 
                 v-model="departmentId" 
                 @change="onDepartmentChange"
-                class="w-full px-3 py-2 input-bg rounded-xl text-primary text-sm focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer transition-all duration-200"
+                :disabled="loadingCourses"
+                class="w-full px-3 py-2 input-bg rounded-xl text-primary text-sm focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer transition-all duration-200 disabled:opacity-70"
               >
-                <option value="all">Tüm Bölümler</option>
+                <option value="all">{{ $t('allDepartments') }}</option>
                 <option v-for="dept in filteredDepartments" :key="dept.id" :value="dept.id">
-                  {{ dept.name }}
+                  {{ getLocalizedName(dept) }}
                 </option>
               </select>
+              <!-- Loading indicator -->
+              <div v-if="loadingCourses" class="absolute right-3 top-1/2 -translate-y-1/2">
+                <svg class="animate-spin h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                </svg>
+              </div>
             </div>
-
-            <!-- Dersleri Getir -->
-            <button 
-              @click="loadCourses"
-              :disabled="!selectedSeason || !departmentId || loadingCourses"
-              class="w-full py-2 btn-primary text-white text-sm font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg"
-            >
-              <svg v-if="loadingCourses" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-              </svg>
-              <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-              </svg>
-              {{ loadingCourses ? 'Yükleniyor...' : 'Dersleri Getir' }}
-            </button>
 
             <!-- Mod Seçimi -->
             <div v-if="availableCourses.length > 0" class="animate-fade-in">
@@ -116,7 +122,7 @@
                   :class="scheduleMode === 'AUTO' ? 'active' : ''"
                 >
                   <span class="mode-icon">🤖</span>
-                  <span>Otomatik</span>
+                  <span>{{ $t('auto') }}</span>
                 </button>
                 <button 
                   @click="scheduleMode = 'MANUAL'"
@@ -124,27 +130,35 @@
                   :class="scheduleMode === 'MANUAL' ? 'active' : ''"
                 >
                   <span class="mode-icon">✋</span>
-                  <span>Manuel</span>
+                  <span>{{ $t('manual') }}</span>
                 </button>
               </div>
+              <p class="mode-description">
+                {{ scheduleMode === 'AUTO' ? $t('autoModeDesc') : $t('manualModeDesc') }}
+              </p>
             </div>
           </div>
 
           <!-- ===== MIDDLE SCROLLABLE SECTION ===== -->
-          <div class="flex-1 overflow-y-auto p-3 space-y-2">
+          <div class="flex-1 flex flex-col min-h-0 max-h-[45vh] p-3">
             <!-- Ders Listesi -->
-            <div v-if="availableCourses.length > 0" class="space-y-1.5 animate-fade-in">
-              <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold text-secondary uppercase tracking-wide">Dersler</label>
-                <span class="text-xs badge-count px-2 py-0.5 rounded-full">{{ groupedCourses.length }}</span>
+            <div v-if="availableCourses.length > 0" class="courses-list-card animate-fade-in">
+              <!-- Header -->
+              <div class="courses-list-header">
+                <span class="courses-list-title">{{ $t('courses') }}</span>
+                <span class="courses-list-count">{{ groupedCourses.length }}</span>
               </div>
+              
+              <!-- Search -->
               <input 
                 v-model="courseSearch"
                 type="text"
-                placeholder="Ders kodu, adı veya hoca ara..."
-                class="w-full px-3 py-2 input-bg rounded-xl text-primary placeholder-secondary text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all duration-200"
+                :placeholder="$t('searchPlaceholder')"
+                class="courses-search-input"
               />
-              <div class="space-y-1 pr-1">
+              
+              <!-- Scrollable Course List -->
+              <div class="courses-list-content space-y-1">
                 <div 
                   v-for="course in filteredCourses" 
                   :key="course.code"
@@ -170,7 +184,8 @@
                         <span class="font-mono text-xs font-bold text-primary">{{ course.code }}</span>
                         <span class="text-[10px] px-1.5 py-0.5 rounded-full badge-section font-semibold">{{ course.sections.length }}</span>
                       </div>
-                      <p class="text-[10px] text-secondary truncate">{{ course.name }}</p>
+                      <p class="text-[10px] text-secondary truncate">{{ getLocalizedName(course) }}</p>
+                      <p v-if="getCourseInstructors(course)" class="text-[10px] text-indigo-400 truncate">👤 {{ getCourseInstructors(course) }}</p>
                     </div>
                   </div>
 
@@ -192,7 +207,8 @@
                           <span class="font-mono text-xs font-bold text-primary">{{ course.code }}</span>
                           <span class="text-[10px] px-1.5 py-0.5 rounded-full badge-section font-semibold">{{ course.sections.length }}</span>
                         </div>
-                        <p class="text-[10px] text-secondary truncate">{{ course.name }}</p>
+                        <p class="text-[10px] text-secondary truncate">{{ getLocalizedName(course) }}</p>
+                        <p v-if="getCourseInstructors(course)" class="text-[10px] text-indigo-400 truncate">👤 {{ getCourseInstructors(course) }}</p>
                       </div>
                     </div>
                     
@@ -214,7 +230,10 @@
                           </svg>
                         </div>
                         <div class="flex-1 min-w-0">
-                          <span class="text-xs font-semibold text-primary">Grup {{ section.section }}</span>
+                          <div class="flex items-center gap-2">
+                            <span class="text-xs font-semibold text-primary">{{ $t('group') }} {{ section.section }}</span>
+                            <span v-if="section.instructor" class="text-[10px] text-indigo-400">• {{ section.instructor }}</span>
+                          </div>
                           <div class="text-[10px] text-secondary">
                             <span v-for="(detail, idx) in section.details" :key="idx">
                               {{ getDayShort(detail.day) }} {{ detail.startHour }}-{{ detail.endHour }}{{ idx < section.details.length - 1 ? ', ' : '' }}
@@ -228,56 +247,94 @@
               </div>
             </div>
 
-            <!-- Boş Durum -->
-            <div v-else class="text-center py-8 text-secondary text-sm">
-              <p>Önce bölüm seçip dersleri getirin</p>
+            <!-- Boş Durum / Yükleniyor -->
+            <div v-else class="courses-list-card flex items-center justify-center">
+              <div v-if="loadingCourses" class="flex flex-col items-center gap-3">
+                <svg class="animate-spin h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                </svg>
+                <p>{{ $t('loading') }}</p>
+              </div>
+              <p v-else>{{ $t('noCourses') }}</p>
             </div>
           </div>
 
           <!-- ===== BOTTOM FIXED SECTION ===== -->
-          <div class="flex-shrink-0 p-3 border-t border-color space-y-2">
+          <div class="flex-1 p-3 border-t border-color flex flex-col gap-2 min-h-[120px] max-h-[35vh]">
             <!-- Seçilen Dersler - AUTO Mode -->
-            <div v-if="scheduleMode === 'AUTO' && selectedCoursesAuto.length > 0" class="animate-fade-in">
-              <label class="text-[10px] font-semibold text-secondary uppercase tracking-wide mb-1 block">Seçilen ({{ selectedCoursesAuto.length }})</label>
-              <div class="flex flex-wrap gap-1 max-h-16 overflow-y-auto">
-                <span 
-                  v-for="code in selectedCoursesAuto" 
-                  :key="code"
-                  class="inline-flex items-center gap-1 px-2 py-1 text-xs font-bold rounded-full tag-selected"
-                >
-                  {{ code }}
-                  <button @click.stop="removeCourseAuto(code)" class="hover:opacity-70 transition-opacity">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            <div v-if="scheduleMode === 'AUTO' && selectedCoursesAuto.length > 0" class="animate-fade-in flex-1 min-h-0 flex flex-col">
+              <div class="selected-courses-card">
+                <!-- Header -->
+                <div class="selected-courses-header">
+                  <div class="flex items-center gap-2">
+                    <span class="selected-courses-title">{{ $t('selected') }}</span>
+                    <span class="selected-courses-count">{{ selectedCoursesAuto.length }}</span>
+                  </div>
+                  <button @click="clearAllCoursesAuto" class="clear-all-btn">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                     </svg>
+                    {{ $t('clearAll') }}
                   </button>
-                </span>
+                </div>
+                
+                <!-- Course Tags -->
+                <div class="selected-courses-content">
+                  <span 
+                    v-for="code in selectedCoursesAuto" 
+                    :key="code"
+                    class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-lg tag-selected"
+                  >
+                    {{ code }}
+                    <button @click.stop="removeCourseAuto(code)" class="hover:opacity-70 transition-opacity">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
               </div>
             </div>
 
             <!-- Seçilen Dersler - MANUAL Mode -->
-            <div v-if="scheduleMode === 'MANUAL' && selectedSections.length > 0" class="animate-fade-in">
-              <label class="text-[10px] font-semibold text-secondary uppercase tracking-wide mb-1 block">Seçilen ({{ selectedSections.length }})</label>
-              
-              <!-- Çakışma Uyarısı -->
-              <div v-if="conflicts.length > 0" class="p-2 conflict-warning rounded-lg mb-1 text-xs">
-                ⚠️ Çakışma var!
-              </div>
-
-              <div class="flex flex-wrap gap-1 max-h-16 overflow-y-auto">
-                <span 
-                  v-for="sel in selectedSections" 
-                  :key="`${sel.code}-${sel.section}`"
-                  class="inline-flex items-center gap-1 px-2 py-1 text-xs font-bold rounded-full"
-                  :class="isInConflict(sel.code) ? 'tag-conflict' : 'tag-selected'"
-                >
-                  {{ sel.code }}
-                  <button @click.stop="removeSection(sel.code, sel.section)" class="hover:opacity-70 transition-opacity">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            <div v-if="scheduleMode === 'MANUAL' && selectedSections.length > 0" class="animate-fade-in flex-1 min-h-0 flex flex-col">
+              <div class="selected-courses-card">
+                <!-- Header -->
+                <div class="selected-courses-header">
+                  <div class="flex items-center gap-2">
+                    <span class="selected-courses-title">{{ $t('selected') }}</span>
+                    <span class="selected-courses-count">{{ selectedSections.length }}</span>
+                  </div>
+                  <button @click="clearAllSections" class="clear-all-btn">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                     </svg>
+                    {{ $t('clearAll') }}
                   </button>
-                </span>
+                </div>
+                
+                <!-- Çakışma Uyarısı -->
+                <div v-if="conflicts.length > 0" class="p-2 conflict-warning rounded-lg mb-2 text-xs">
+                  ⚠️ {{ $t('conflictWarning') }}
+                </div>
+
+                <!-- Course Tags -->
+                <div class="selected-courses-content">
+                  <span 
+                    v-for="sel in selectedSections" 
+                    :key="`${sel.code}-${sel.section}`"
+                    class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-lg"
+                    :class="isInConflict(sel.code) ? 'tag-conflict' : 'tag-selected'"
+                  >
+                    {{ sel.code }}
+                    <button @click.stop="removeSection(sel.code, sel.section)" class="hover:opacity-70 transition-opacity">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -285,7 +342,7 @@
             <button 
               @click="generateSchedule"
               :disabled="!canGenerate || generating"
-              class="w-full py-2.5 btn-success text-white text-sm font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg"
+              class="w-full py-2.5 btn-success text-white text-sm font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg mt-auto flex-shrink-0"
             >
               <svg v-if="generating" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -294,7 +351,7 @@
               <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
               </svg>
-              {{ generating ? 'Oluşturuluyor...' : 'Program Oluştur' }}
+              {{ generating ? $t('generating') : $t('generateSchedule') }}
             </button>
           </div>
         </aside>
@@ -320,96 +377,101 @@
           <!-- Sonuç -->
           <div v-if="scheduleResult && scheduleResult.success" class="flex-1 overflow-auto p-4 space-y-4">
             
-            <!-- Çakışma Uyarısı -->
-            <div v-if="scheduleResult.hasOverlap" 
-                 class="p-4 rounded-xl bg-gradient-to-r from-yellow-500/20 to-amber-500/20 border border-yellow-500/50 animate-fade-in">
-              <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center flex-shrink-0">
-                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
+            <!-- Uyarılar Grid -->
+            <div v-if="scheduleResult.hasOverlap || (scheduleResult.excludedCourses && scheduleResult.excludedCourses.length > 0)" 
+                 class="grid gap-3 animate-fade-in"
+                 :class="scheduleResult.hasOverlap && scheduleResult.excludedCourses?.length > 0 ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'">
+              
+              <!-- Çakışma Uyarısı -->
+              <div v-if="scheduleResult.hasOverlap" class="warning-card warning-yellow">
+                <div class="warning-header">
+                  <div class="warning-icon warning-icon-yellow">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="warning-title text-yellow-400">{{ $t('overlapWarning') }}</h3>
+                    <p class="warning-subtitle">{{ $t('overlapMessage', { minutes: scheduleResult.overlapMinutes }) }}</p>
+                  </div>
                 </div>
-                <div class="flex-1">
-                  <h3 class="font-bold text-yellow-400 mb-1">⚠️ Çakışma Uyarısı</h3>
-                  <p class="text-sm text-secondary mb-3">
-                    Programda <span class="font-bold text-yellow-300">{{ scheduleResult.overlapMinutes }} dakikalık</span> çakışma var.
-                  </p>
-                  
-                  <!-- Çakışma Detayları -->
-                  <div v-if="scheduleResult.overlapDetails && scheduleResult.overlapDetails.length > 0" class="space-y-2">
-                    <div v-for="(overlap, idx) in scheduleResult.overlapDetails" :key="idx"
-                         class="flex items-center gap-2 p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
-                      <span class="text-lg">⚡</span>
-                      <div class="flex-1">
-                        <div class="flex items-center gap-2 flex-wrap">
-                          <span class="font-bold text-yellow-300">{{ overlap.course1Code }}</span>
-                          <span class="text-yellow-500">↔</span>
-                          <span class="font-bold text-yellow-300">{{ overlap.course2Code }}</span>
-                        </div>
-                        <div class="text-xs text-secondary mt-1">
-                          📅 {{ overlap.dayTurkish }} • 🕐 {{ overlap.overlapStart }} - {{ overlap.overlapEnd }} 
-                          <span class="text-yellow-400 font-semibold">({{ overlap.overlapMinutes }} dk)</span>
-                        </div>
-                      </div>
+                
+                <!-- Çakışma Detayları - Compact -->
+                <div v-if="scheduleResult.overlapDetails && scheduleResult.overlapDetails.length > 0" class="warning-content">
+                  <div v-for="(overlap, idx) in scheduleResult.overlapDetails" :key="idx" class="overlap-item">
+                    <div class="overlap-courses">
+                      <span class="overlap-code">{{ overlap.course1Code }}</span>
+                      <svg class="w-3 h-3 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                      </svg>
+                      <span class="overlap-code">{{ overlap.course2Code }}</span>
+                    </div>
+                    <div class="overlap-details">
+                      {{ overlap.dayTurkish }} • {{ overlap.overlapStart }} - {{ overlap.overlapEnd }}
+                      <span class="overlap-duration">({{ overlap.overlapMinutes }} dk)</span>
                     </div>
                   </div>
-                  
-                  <p class="text-xs text-secondary mt-3 opacity-75">
-                    💡 İpucu: Çakışan derslerin bir kısmına katılamayabilirsiniz.
-                  </p>
                 </div>
+                
+                <p class="warning-tip">💡 {{ $t('overlapTip') }}</p>
               </div>
-            </div>
-            
-            <!-- Kısmi Çözüm Uyarısı -->
-            <div v-if="scheduleResult.excludedCourses && scheduleResult.excludedCourses.length > 0" 
-                 class="p-4 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/50 animate-fade-in">
-              <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center flex-shrink-0">
-                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                  </svg>
+              
+              <!-- Kısmi Çözüm Uyarısı -->
+              <div v-if="scheduleResult.excludedCourses && scheduleResult.excludedCourses.length > 0" class="warning-card warning-orange">
+                <div class="warning-header">
+                  <div class="warning-icon warning-icon-orange">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="warning-title text-amber-400">{{ $t('partialSchedule') }}</h3>
+                    <p class="warning-subtitle">{{ $t('partialScheduleMessage') }}</p>
+                  </div>
                 </div>
-                <div class="flex-1">
-                  <h3 class="font-bold text-amber-400 mb-1">Kısmi Program Oluşturuldu</h3>
-                  <p class="text-sm text-secondary mb-2">Tüm dersler sığmadı. Çakışma nedeniyle şu dersler çıkarıldı:</p>
-                  <div class="flex flex-wrap gap-2">
-                    <span v-for="code in scheduleResult.excludedCourses" :key="code" 
-                          class="px-3 py-1 bg-red-500/30 text-red-300 text-sm font-bold rounded-full border border-red-500/50">
-                      ❌ {{ code }}
+                <div class="warning-content">
+                  <div class="excluded-courses">
+                    <span v-for="code in scheduleResult.excludedCourses" :key="code" class="excluded-badge">
+                      {{ code }}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
             
-            <!-- İstatistikler ve Başlık -->
-            <div class="flex items-center gap-3 flex-wrap animate-slide-down">
-              <div class="stat-card stat-blue">
-                <span class="text-2xl font-bold">{{ scheduleResult.totalCredits }}</span>
-                <span class="text-xs opacity-90">Toplam Kredi</span>
-              </div>
-              <div class="stat-card stat-purple">
-                <span class="text-2xl font-bold">{{ scheduleResult.totalEcts }}</span>
-                <span class="text-xs opacity-90">Toplam AKTS</span>
-              </div>
-              <div class="stat-card stat-green">
-                <span class="text-2xl font-bold">{{ scheduleResult.metrics?.daysWithClasses }}</span>
-                <span class="text-xs opacity-90">Ders Günü</span>
-              </div>
-              <div class="stat-card stat-orange">
-                <span class="text-2xl font-bold">{{ scheduleResult.metrics?.totalGaps }}<span class="text-sm">dk</span></span>
-                <span class="text-xs opacity-90">Boşluk</span>
-              </div>
-              <div v-if="scheduleResult.hasOverlap" class="stat-card stat-red">
-                <span class="text-2xl font-bold">{{ scheduleResult.overlapMinutes }}<span class="text-sm">dk</span></span>
-                <span class="text-xs opacity-90">Çakışma ⚠️</span>
+            <!-- İstatistikler Grid -->
+            <div class="stats-container animate-slide-down">
+              <div class="stats-grid">
+                <div class="stat-item stat-cyan">
+                  <span class="stat-value">{{ scheduleResult.selectedCourses?.length || 0 }}</span>
+                  <span class="stat-label">{{ $t('totalCourses') }}</span>
+                </div>
+                <div class="stat-item stat-blue">
+                  <span class="stat-value">{{ scheduleResult.totalCredits }}</span>
+                  <span class="stat-label">{{ $t('totalCredits') }}</span>
+                </div>
+                <div class="stat-item stat-purple">
+                  <span class="stat-value">{{ scheduleResult.totalEcts }}</span>
+                  <span class="stat-label">{{ $t('totalEcts') }}</span>
+                </div>
+                <div class="stat-item stat-green">
+                  <span class="stat-value">{{ scheduleResult.metrics?.daysWithClasses }}</span>
+                  <span class="stat-label">{{ $t('daysWithClasses') }}</span>
+                </div>
+                <div class="stat-item stat-orange">
+                  <span class="stat-value">{{ scheduleResult.metrics?.totalGaps }}<small>{{ $t('minutes') }}</small></span>
+                  <span class="stat-label">{{ $t('gaps') }}</span>
+                </div>
+                <div v-if="scheduleResult.hasOverlap" class="stat-item stat-red">
+                  <span class="stat-value">{{ scheduleResult.overlapMinutes }}<small>{{ $t('minutes') }}</small></span>
+                  <span class="stat-label">{{ $t('overlap') }}</span>
+                </div>
               </div>
               
               <!-- Program Başlığı -->
-              <div class="hidden sm:block border-l border-color pl-4 ml-2">
-                <h2 class="text-base font-bold text-primary">{{ activeSeason?.year }} {{ activeSeason?.name }}</h2>
-                <p class="text-xs text-secondary">{{ new Date().toLocaleDateString('tr-TR') }}</p>
+              <div class="stats-footer">
+                <span class="stats-season">{{ activeSeason?.year }} {{ activeSeason ? getLocalizedName(activeSeason) : '' }}</span>
+                <span class="stats-date">{{ new Date().toLocaleDateString(locale === 'tr' ? 'tr-TR' : 'en-US') }}</span>
               </div>
             </div>
 
@@ -419,9 +481,9 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
-                Haftalık Program
+                {{ $t('weeklySchedule') }}
               </h2>
-              <WeeklySchedule :schedule="scheduleResult.weeklySchedule" :isDarkMode="isDarkMode" />
+              <WeeklySchedule :schedule="scheduleResult.weeklySchedule" :isDarkMode="isDarkMode" :locale="locale" />
             </div>
             
             <!-- Oluşturulan Programdaki Dersler -->
@@ -432,7 +494,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
                   </svg>
                 </div>
-                Oluşturulan Programdaki Dersler
+                {{ $t('scheduledCourses') }}
               </h2>
               
               <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -445,19 +507,19 @@
                   <!-- Course Header with gradient -->
                   <div class="course-detail-header p-4">
                     <div class="flex items-start justify-between">
-                      <div>
+                      <div class="flex-1 min-w-0 pr-2">
                         <h3 class="font-black text-white text-lg tracking-wide">{{ course.code }}</h3>
-                        <p class="text-sm text-white/80 mt-1">{{ course.name || course.nameEn }}</p>
+                        <p class="text-sm text-white/80 mt-1 course-name-truncate" :title="getLocalizedName(course)">{{ getLocalizedName(course) }}</p>
                       </div>
-                      <span class="px-3 py-1.5 text-xs font-black rounded-lg bg-white/20 text-white backdrop-blur-sm">
-                        Grup {{ course.section }}
+                      <span class="px-3 py-1.5 text-xs font-black rounded-lg bg-white/20 text-white backdrop-blur-sm flex-shrink-0">
+                        {{ $t('group') }} {{ course.section }}
                       </span>
                     </div>
                     
                     <!-- Credits in header -->
-                    <div class="flex gap-3 mt-3">
+                    <div class="flex gap-3 mt-auto pt-3">
                       <span class="px-3 py-1 rounded-lg bg-white/15 text-white text-sm font-semibold">
-                        {{ course.credit }} Kredi
+                        {{ course.credit }} {{ $t('credit') }}
                       </span>
                       <span class="px-3 py-1 rounded-lg bg-white/15 text-white text-sm font-semibold">
                         {{ course.ects }} AKTS
@@ -489,11 +551,11 @@
                           </svg>
                           {{ detail.startHour }} - {{ detail.endHour }}
                         </span>
-                        <span v-if="detail.fullName" class="text-xs flex items-center gap-1.5 font-medium opacity-80 truncate max-w-[140px]" :title="detail.fullName">
+                        <span v-if="detail.fullName" class="text-xs flex items-center gap-1.5 font-medium opacity-80 truncate max-w-[180px]" :title="detail.fullName">
                           <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                           </svg>
-                          {{ formatInstructorShort(detail.fullName) }}
+                          {{ detail.fullName }}
                         </span>
                       </div>
                     </div>
@@ -528,9 +590,9 @@
               </div>
             </div>
             
-            <h3 class="text-2xl font-bold text-primary mb-2 animate-pulse">Program Oluşturuluyor...</h3>
+            <h3 class="text-2xl font-bold text-primary mb-2 animate-pulse">{{ $t('generatingSchedule') }}</h3>
             <p class="text-secondary text-base max-w-sm">
-              En uygun ders programı hesaplanıyor, lütfen bekleyin
+              {{ $t('calculatingSchedule') }}
             </p>
             
             <!-- Loading dots -->
@@ -548,15 +610,15 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
               </svg>
             </div>
-            <h3 class="text-2xl font-bold text-primary mb-2">Henüz Program Yok</h3>
+            <h3 class="text-2xl font-bold text-primary mb-2">{{ $t('noScheduleYet') }}</h3>
             <p class="text-secondary text-base max-w-sm">
-              Sol panelden bölüm seçin, dersleri yükleyin ve program oluşturun
+              {{ $t('noScheduleMessage') }}
             </p>
             <button 
               @click="mobileMenuOpen = true"
               class="mt-6 px-6 py-3 btn-primary text-white text-sm font-bold rounded-xl lg:hidden hover:shadow-lg transition-all duration-300"
             >
-              Ders Seç
+              {{ $t('selectCourse') }}
             </button>
           </div>
         </main>
@@ -566,9 +628,51 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { courseApi } from './api/courseApi'
 import WeeklySchedule from './components/WeeklySchedule.vue'
+
+// i18n
+const { t, locale } = useI18n()
+
+// LocalStorage keys
+const STORAGE_KEYS = {
+  DEPARTMENT: 'cs_department',
+  SCHEDULE_MODE: 'cs_scheduleMode',
+  SELECTED_COURSES_AUTO: 'cs_selectedCoursesAuto',
+  SELECTED_SECTIONS: 'cs_selectedSections',
+  SCHEDULE_RESULT: 'cs_scheduleResult'
+}
+
+const toggleLanguage = () => {
+  locale.value = locale.value === 'tr' ? 'en' : 'tr'
+  localStorage.setItem('language', locale.value)
+}
+
+// Helper function to get localized name
+const getLocalizedName = (item) => {
+  if (!item) return ''
+  if (locale.value === 'en' && item.nameEn) {
+    return item.nameEn
+  }
+  return item.name || item.nameEn || ''
+}
+
+// Helper function to get course instructors
+const getCourseInstructors = (course) => {
+  if (!course || !course.sections) return ''
+  const instructors = new Set()
+  course.sections.forEach(section => {
+    if (section.instructor) {
+      instructors.add(section.instructor)
+    }
+  })
+  const arr = [...instructors]
+  if (arr.length === 0) return ''
+  if (arr.length <= 2) return arr.join(', ')
+  return arr.slice(0, 2).join(', ') + ` +${arr.length - 2}`
+}
 
 // Theme & Mobile
 const isDarkMode = ref(true)
@@ -642,6 +746,45 @@ const loadingSeasons = ref(false)
 const loadingDepartments = ref(false)
 const loadingCourses = ref(false)
 const generating = ref(false)
+
+// Save state to localStorage
+const saveState = () => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.DEPARTMENT, departmentId.value)
+    localStorage.setItem(STORAGE_KEYS.SCHEDULE_MODE, scheduleMode.value)
+    localStorage.setItem(STORAGE_KEYS.SELECTED_COURSES_AUTO, JSON.stringify(selectedCoursesAuto.value))
+    localStorage.setItem(STORAGE_KEYS.SELECTED_SECTIONS, JSON.stringify(selectedSections.value))
+    if (scheduleResult.value) {
+      localStorage.setItem(STORAGE_KEYS.SCHEDULE_RESULT, JSON.stringify(scheduleResult.value))
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.SCHEDULE_RESULT)
+    }
+  } catch (e) {
+    console.warn('Failed to save state to localStorage:', e)
+  }
+}
+
+// Load state from localStorage
+const loadSavedState = () => {
+  try {
+    const savedDepartment = localStorage.getItem(STORAGE_KEYS.DEPARTMENT)
+    const savedMode = localStorage.getItem(STORAGE_KEYS.SCHEDULE_MODE)
+    const savedCoursesAuto = localStorage.getItem(STORAGE_KEYS.SELECTED_COURSES_AUTO)
+    const savedSections = localStorage.getItem(STORAGE_KEYS.SELECTED_SECTIONS)
+    const savedResult = localStorage.getItem(STORAGE_KEYS.SCHEDULE_RESULT)
+
+    if (savedDepartment) departmentId.value = savedDepartment
+    if (savedMode) scheduleMode.value = savedMode
+    if (savedCoursesAuto) selectedCoursesAuto.value = JSON.parse(savedCoursesAuto)
+    if (savedSections) selectedSections.value = JSON.parse(savedSections)
+    if (savedResult) scheduleResult.value = JSON.parse(savedResult)
+    
+    return savedDepartment !== null
+  } catch (e) {
+    console.warn('Failed to load state from localStorage:', e)
+    return false
+  }
+}
 
 // Computed
 const filteredDepartments = computed(() => {
@@ -726,41 +869,31 @@ const parseTime = (timeStr) => {
   return parseInt(parts[0]) * 60 + parseInt(parts[1] || 0)
 }
 
-const dayNames = {
-  'MON': 'Pazartesi', 'TUE': 'Salı', 'WED': 'Çarşamba',
-  'THU': 'Perşembe', 'FRI': 'Cuma', 'SAT': 'Cumartesi', 'SUN': 'Pazar'
-}
-
-const dayShort = {
-  'MON': 'Pzt', 'TUE': 'Sal', 'WED': 'Çar',
-  'THU': 'Per', 'FRI': 'Cum', 'SAT': 'Cmt', 'SUN': 'Paz'
-}
-
-const getDayTurkish = (day) => dayNames[day] || day
-const getDayShort = (day) => dayShort[day] || day
+const getDayTurkish = (day) => t(`days.${day}`) || day
+const getDayShort = (day) => t(`daysShort.${day}`) || day
 
 // Type helpers for detailed view - flexible matching
 const getTypeTurkishFull = (type) => {
-  const t = (type || '').toUpperCase()
-  if (t.includes('LEC') || t.includes('LECTURE') || t.includes('TEO') || t.includes('THEORY')) return 'Teorik Ders'
-  if (t.includes('LAB') || t.includes('LABOR')) return 'Laboratuvar'
-  if (t.includes('PS') || t.includes('PROBLEM') || t.includes('RECIT')) return 'Problem Çözümü'
-  return type || 'Diğer'
+  const typeStr = (type || '').toUpperCase()
+  if (typeStr.includes('LEC') || typeStr.includes('LECTURE') || typeStr.includes('TEO') || typeStr.includes('THEORY')) return t('types.lecture')
+  if (typeStr.includes('LAB') || typeStr.includes('LABOR')) return t('types.lab')
+  if (typeStr.includes('PS') || typeStr.includes('PROBLEM') || typeStr.includes('RECIT')) return t('types.ps')
+  return type || t('types.other')
 }
 
 const getTypeIcon = (type) => {
-  const t = (type || '').toUpperCase()
-  if (t.includes('LEC') || t.includes('LECTURE') || t.includes('TEO') || t.includes('THEORY')) return '📚'
-  if (t.includes('LAB') || t.includes('LABOR')) return '🔬'
-  if (t.includes('PS') || t.includes('PROBLEM') || t.includes('RECIT')) return '✏️'
+  const typeStr = (type || '').toUpperCase()
+  if (typeStr.includes('LEC') || typeStr.includes('LECTURE') || typeStr.includes('TEO') || typeStr.includes('THEORY')) return '📚'
+  if (typeStr.includes('LAB') || typeStr.includes('LABOR')) return '🔬'
+  if (typeStr.includes('PS') || typeStr.includes('PROBLEM') || typeStr.includes('RECIT')) return '✏️'
   return '📋'
 }
 
 const getDetailTypeClass = (type) => {
-  const t = (type || '').toUpperCase()
-  if (t.includes('LEC') || t.includes('LECTURE') || t.includes('TEO') || t.includes('THEORY')) return 'type-lecture'
-  if (t.includes('LAB') || t.includes('LABOR')) return 'type-lab'
-  if (t.includes('PS') || t.includes('PROBLEM') || t.includes('RECIT')) return 'type-ps'
+  const typeStr = (type || '').toUpperCase()
+  if (typeStr.includes('LEC') || typeStr.includes('LECTURE') || typeStr.includes('TEO') || typeStr.includes('THEORY')) return 'type-lecture'
+  if (typeStr.includes('LAB') || typeStr.includes('LABOR')) return 'type-lab'
+  if (typeStr.includes('PS') || typeStr.includes('PROBLEM') || typeStr.includes('RECIT')) return 'type-ps'
   return 'type-other'
 }
 
@@ -840,7 +973,7 @@ const loadSeasons = async () => {
     const active = seasons.value.find(s => s.active === 1)
     if (active) selectedSeason.value = active.id
   } catch (e) {
-    error.value = 'Dönemler yüklenirken hata: ' + e.message
+    error.value = t('errorLoadingSeasons', { message: e.message })
   } finally {
     loadingSeasons.value = false
   }
@@ -852,17 +985,19 @@ const loadDepartments = async () => {
     departments.value = await courseApi.getDepartments()
     departments.value.sort((a, b) => a.name.localeCompare(b.name, 'tr'))
   } catch (e) {
-    error.value = 'Bölümler yüklenirken hata: ' + e.message
+    error.value = t('errorLoadingDepartments', { message: e.message })
   } finally {
     loadingDepartments.value = false
   }
 }
 
-const onDepartmentChange = () => {
-  availableCourses.value = []
+const onDepartmentChange = async () => {
   selectedSections.value = []
+  selectedCoursesAuto.value = []
   expandedCourses.value = []
   scheduleResult.value = null
+  // Automatically load courses when department changes
+  await loadCourses()
 }
 
 const loadCourses = async () => {
@@ -872,7 +1007,7 @@ const loadCourses = async () => {
   try {
     availableCourses.value = await courseApi.getCourses(selectedSeason.value, departmentId.value)
   } catch (e) {
-    error.value = 'Dersler yüklenirken hata: ' + e.message
+    error.value = t('errorLoadingCourses', { message: e.message })
   } finally {
     loadingCourses.value = false
   }
@@ -901,6 +1036,14 @@ const toggleSection = (code, section) => {
 const removeSection = (code, section) => {
   const idx = selectedSections.value.findIndex(s => s.code === code && s.section === section)
   if (idx !== -1) selectedSections.value.splice(idx, 1)
+}
+
+const clearAllSections = () => {
+  selectedSections.value = []
+}
+
+const clearAllCoursesAuto = () => {
+  selectedCoursesAuto.value = []
 }
 
 // AUTO mode functions
@@ -955,19 +1098,39 @@ const generateSchedule = async () => {
     if (result.success) scheduleResult.value = result
     else error.value = result.message
   } catch (e) {
-    error.value = 'Program oluşturulurken hata: ' + e.message
+    error.value = t('errorGenerating', { message: e.message })
   } finally {
     generating.value = false
   }
 }
 
+// Watchers for auto-save
+watch(departmentId, saveState)
+watch(scheduleMode, saveState)
+watch(selectedCoursesAuto, saveState, { deep: true })
+watch(selectedSections, saveState, { deep: true })
+watch(scheduleResult, saveState, { deep: true })
+
 // Lifecycle
-onMounted(() => {
+onMounted(async () => {
   const savedTheme = localStorage.getItem('theme')
   isDarkMode.value = savedTheme !== 'light'
-  loadSeasons()
-  loadDepartments()
+  
+  // Load saved state before fetching data
+  const hasSavedState = loadSavedState()
+  
+  await loadSeasons()
+  await loadDepartments()
+  
+  // Load courses for the saved or default department
+  await loadCourses()
+  
   connectWebSocket()
+  
+  // Show a message if state was restored
+  if (hasSavedState && (selectedCoursesAuto.value.length > 0 || selectedSections.value.length > 0)) {
+    console.log('Previous session restored')
+  }
 })
 
 onUnmounted(() => {
@@ -995,6 +1158,7 @@ onUnmounted(() => {
   --btn-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
   --btn-success: linear-gradient(135deg, #10b981, #14b8a6);
   
+  --stat-cyan: linear-gradient(135deg, #06b6d4, #0891b2);
   --stat-blue: linear-gradient(135deg, #3b82f6, #2563eb);
   --stat-purple: linear-gradient(135deg, #8b5cf6, #7c3aed);
   --stat-green: linear-gradient(135deg, #10b981, #059669);
@@ -1036,6 +1200,7 @@ onUnmounted(() => {
   --btn-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
   --btn-success: linear-gradient(135deg, #10b981, #14b8a6);
   
+  --stat-cyan: linear-gradient(135deg, #06b6d4, #0e7490);
   --stat-blue: linear-gradient(135deg, #3b82f6, #1d4ed8);
   --stat-purple: linear-gradient(135deg, #8b5cf6, #6d28d9);
   --stat-green: linear-gradient(135deg, #10b981, #047857);
@@ -1064,6 +1229,7 @@ onUnmounted(() => {
 .app-bg { background-color: var(--bg-primary); }
 .sidebar-bg { background-color: var(--bg-secondary); }
 .header-bg { background-color: var(--bg-secondary); }
+.sticky-header { background-color: var(--bg-secondary); }
 .card-bg { background-color: var(--bg-secondary); border: 1px solid var(--border-color); }
 .input-bg { background-color: var(--bg-tertiary); border: 1px solid var(--border-color); }
 .text-primary { color: var(--text-primary); }
@@ -1117,22 +1283,202 @@ onUnmounted(() => {
   box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
 }
 
-/* Stats */
-.stat-card {
+/* Warning Cards */
+.warning-card {
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid;
+}
+
+.warning-yellow {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.1), rgba(245, 158, 11, 0.1));
+  border-color: rgba(234, 179, 8, 0.3);
+}
+
+.warning-orange {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(249, 115, 22, 0.1));
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.warning-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.warning-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+}
+
+.warning-icon-yellow {
+  background: linear-gradient(135deg, #eab308, #f59e0b);
+}
+
+.warning-icon-orange {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+}
+
+.warning-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.warning-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.warning-content {
+  margin-top: 12px;
+  margin-left: 44px;
+}
+
+.warning-tip {
+  font-size: 11px;
+  color: var(--text-secondary);
+  opacity: 0.8;
+  margin-top: 10px;
+  margin-left: 44px;
+}
+
+/* Overlap Items */
+.overlap-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(234, 179, 8, 0.1);
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+.overlap-item:last-child {
+  margin-bottom: 0;
+}
+
+.overlap-courses {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.overlap-code {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.overlap-details {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.overlap-duration {
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+/* Excluded Courses */
+.excluded-courses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.excluded-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+}
+
+/* Stats Container */
+.stats-container {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 10px;
+}
+
+.stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.75rem 1.25rem;
-  border-radius: 1rem;
+  justify-content: center;
+  padding: 14px 12px;
+  border-radius: 12px;
   color: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  text-align: center;
 }
 
+.stat-value {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.stat-value small {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.85;
+  margin-left: 2px;
+}
+
+.stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.9;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.stat-cyan { background: var(--stat-cyan); }
 .stat-blue { background: var(--stat-blue); }
 .stat-purple { background: var(--stat-purple); }
 .stat-green { background: var(--stat-green); }
 .stat-orange { background: var(--stat-orange); }
 .stat-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+.stats-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.stats-season {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stats-date {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
 
 /* Course Items */
 .course-item {
@@ -1227,6 +1573,15 @@ onUnmounted(() => {
   transition: transform 0.3s ease;
 }
 
+.mode-description {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  padding: 0 8px;
+  line-height: 1.4;
+}
+
 .mode-toggle-btn.active .mode-icon {
   animation: bounce-icon 0.4s ease;
 }
@@ -1251,6 +1606,180 @@ onUnmounted(() => {
 .tag-selected {
   background: var(--tag-selected);
   color: white;
+}
+
+/* Selected Courses Card */
+.selected-courses-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.selected-courses-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.selected-courses-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.selected-courses-count {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--badge-bg);
+  color: var(--badge-text);
+}
+
+.clear-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-all-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.selected-courses-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  overflow-y: auto;
+  flex: 1;
+  align-content: flex-start;
+  justify-content: center;
+  mask-image: linear-gradient(to bottom, black calc(100% - 16px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 16px), transparent 100%);
+}
+
+.selected-courses-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.selected-courses-content::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 3px;
+}
+
+.selected-courses-content::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.selected-courses-content::-webkit-scrollbar-thumb:hover {
+  background: #6366f1;
+}
+
+/* Courses List Card */
+.courses-list-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  height: 100%;
+  min-height: 200px;
+  overflow: hidden;
+}
+
+.courses-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.courses-list-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.courses-list-count {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--badge-bg);
+  color: var(--badge-text);
+}
+
+.courses-search-input {
+  margin: 10px 12px;
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.courses-search-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.courses-search-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.courses-list-content {
+  flex: 1 1 0;
+  overflow-y: auto;
+  padding: 0 12px 12px;
+  display: block;
+  min-height: 0;
+  mask-image: linear-gradient(to bottom, black calc(100% - 20px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 20px), transparent 100%);
+}
+
+.courses-list-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.courses-list-content::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 3px;
+}
+
+.courses-list-content::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.courses-list-content::-webkit-scrollbar-thumb:hover {
+  background: #6366f1;
 }
 
 .tag-conflict {
@@ -1411,6 +1940,19 @@ onUnmounted(() => {
 
 .course-detail-header {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-name-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+  max-height: 2.6em;
 }
 
 .course-detail-card:nth-child(3n+2) .course-detail-header {
@@ -1517,4 +2059,42 @@ onUnmounted(() => {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+/* Hide scrollbar utility */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile improvements */
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 8px;
+  }
+  
+  .stat-item {
+    padding: 10px 8px;
+  }
+  
+  .stat-value {
+    font-size: 18px;
+  }
+  
+  .stat-label {
+    font-size: 9px;
+  }
+  
+  .warning-content {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+  
+  .warning-tip {
+    margin-left: 0;
+  }
+}
 </style>

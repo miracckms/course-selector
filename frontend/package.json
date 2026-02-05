@@ -12,7 +12,8 @@
     "axios": "^1.6.7",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.1.0",
-    "vue": "^3.4.15"
+    "vue": "^3.4.15",
+    "vue-i18n": "^9.14.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",
