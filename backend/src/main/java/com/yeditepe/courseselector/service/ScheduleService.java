@@ -91,20 +91,37 @@ public class ScheduleService {
      */
     public ScheduleResult generateOptimalSchedule(List<Course> allCourses, List<String> requestedCourseCodes) {
         // Group courses by code (each code can have multiple sections)
+        // Filter out sections without valid time slots
         Map<String, List<Course>> coursesByCode = allCourses.stream()
                 .filter(c -> requestedCourseCodes.contains(c.getCode()))
+                .filter(this::hasValidTimeSlots) // Sadece saati olan dersleri al
                 .collect(Collectors.groupingBy(Course::getCode));
 
+        // Check which courses have no schedulable sections
+        List<String> noScheduleCourses = requestedCourseCodes.stream()
+                .filter(code -> !coursesByCode.containsKey(code) || coursesByCode.get(code).isEmpty())
+                .filter(code -> allCourses.stream().anyMatch(c -> c.getCode().equals(code))) // Ders var ama saati yok
+                .collect(Collectors.toList());
+        
         // Check if all requested courses are available
         List<String> missingCourses = requestedCourseCodes.stream()
-                .filter(code -> !coursesByCode.containsKey(code))
+                .filter(code -> !coursesByCode.containsKey(code) || coursesByCode.get(code).isEmpty())
+                .filter(code -> allCourses.stream().noneMatch(c -> c.getCode().equals(code))) // Ders hiç yok
                 .collect(Collectors.toList());
 
         if (!missingCourses.isEmpty()) {
             return createErrorResult("Şu ders kodları bulunamadı: " + String.join(", ", missingCourses));
         }
 
-        List<String> availableCodes = new ArrayList<>(requestedCourseCodes);
+        // Filter out courses with no valid time slots from the request
+        List<String> availableCodes = requestedCourseCodes.stream()
+                .filter(code -> coursesByCode.containsKey(code) && !coursesByCode.get(code).isEmpty())
+                .collect(Collectors.toList());
+        
+        if (availableCodes.isEmpty()) {
+            return createErrorResult("Seçilen derslerin hiçbirinde ders saati bulunamadı. " +
+                "Staj, proje gibi dersler programa eklenemez.");
+        }
         
         // Use backtracking to find valid schedules efficiently
         List<ScoredSchedule> validSchedules = new ArrayList<>();
@@ -121,10 +138,23 @@ public class ScheduleService {
             ScoredSchedule best = validSchedules.get(0);
             ScheduleResult result = createSuccessResult(best.courses, best.metrics);
             
+            StringBuilder message = new StringBuilder();
+            
+            // Saati olmayan dersler varsa bilgilendir
+            if (!noScheduleCourses.isEmpty()) {
+                message.append("⚠️ Saati olmayan " + noScheduleCourses.size() + " ders çıkarıldı: " + 
+                    String.join(", ", noScheduleCourses) + ". ");
+                // Bu dersleri excludedCourses'a ekle
+                List<String> excluded = result.getExcludedCourses() != null ? 
+                    new ArrayList<>(result.getExcludedCourses()) : new ArrayList<>();
+                excluded.addAll(noScheduleCourses);
+                result.setExcludedCourses(excluded);
+            }
+            
             // Çakışma varsa kullanıcıyı bilgilendir ve detayları ekle
             if (best.overlapCount > 0) {
-                result.setMessage("⚠️ Program oluşturuldu! " + best.overlapCount + " çakışma var (" + 
-                    best.totalOverlapMinutes + " dakika). Çakışan derslere dikkat edin.");
+                message.append("⚠️ " + best.overlapCount + " çakışma var (" + 
+                    best.totalOverlapMinutes + " dakika). ");
                 result.setHasOverlap(true);
                 result.setOverlapMinutes(best.totalOverlapMinutes);
                 
@@ -136,11 +166,29 @@ public class ScheduleService {
                 result.setOverlapDetails(calculateOverlapDetails(allSlots));
             }
             
+            if (message.length() > 0) {
+                result.setMessage(message.toString().trim());
+            }
+            
             return result;
         }
 
         // No complete solution - try greedy approach for partial solution
-        return findPartialScheduleGreedy(coursesByCode, availableCodes);
+        ScheduleResult partialResult = findPartialScheduleGreedy(coursesByCode, availableCodes);
+        
+        // Saati olmayan dersleri de excluded listesine ekle
+        if (!noScheduleCourses.isEmpty() && partialResult.isSuccess()) {
+            List<String> excluded = partialResult.getExcludedCourses() != null ? 
+                new ArrayList<>(partialResult.getExcludedCourses()) : new ArrayList<>();
+            excluded.addAll(noScheduleCourses);
+            partialResult.setExcludedCourses(excluded);
+            
+            String currentMessage = partialResult.getMessage() != null ? partialResult.getMessage() : "";
+            partialResult.setMessage("⚠️ Saati olmayan dersler çıkarıldı: " + 
+                String.join(", ", noScheduleCourses) + ". " + currentMessage);
+        }
+        
+        return partialResult;
     }
     
     /**
@@ -234,6 +282,25 @@ public class ScheduleService {
         }
         
         return new OverlapInfo(overlapCount, totalOverlapMinutes);
+    }
+    
+    /**
+     * Dersin geçerli ders saati olup olmadığını kontrol eder
+     * Staj, proje gibi dersler saatsiz olabilir
+     */
+    private boolean hasValidTimeSlots(Course course) {
+        if (course.getDetails() == null || course.getDetails().isEmpty()) {
+            return false;
+        }
+        
+        // En az bir geçerli zaman dilimi olmalı
+        return course.getDetails().stream().anyMatch(detail -> 
+            detail.getDay() != null && 
+            detail.getStartHour() != null && 
+            detail.getEndHour() != null &&
+            !detail.getStartHour().isEmpty() &&
+            !detail.getEndHour().isEmpty()
+        );
     }
     
     /**

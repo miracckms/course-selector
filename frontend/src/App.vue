@@ -248,15 +248,39 @@
             </div>
 
             <!-- Boş Durum / Yükleniyor -->
-            <div v-else class="courses-list-card flex items-center justify-center">
-              <div v-if="loadingCourses" class="flex flex-col items-center gap-3">
-                <svg class="animate-spin h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                </svg>
-                <p>{{ $t('loading') }}</p>
+            <div v-else class="courses-list-card">
+              <!-- Modern Loading State -->
+              <div v-if="loadingCourses" class="courses-loading-container">
+                <div class="courses-loading-content">
+                  <!-- Animated Icon -->
+                  <div class="courses-loading-icon">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-10 h-10">
+                      <path d="M12 6.5V3M12 21v-3.5M6.5 12H3M21 12h-3.5M18.364 5.636l-2.475 2.475M8.111 15.889l-2.475 2.475M5.636 5.636l2.475 2.475M15.889 15.889l2.475 2.475" 
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" class="courses-loading-rays"/>
+                      <circle cx="12" cy="12" r="4" fill="currentColor" class="courses-loading-center"/>
+                    </svg>
+                  </div>
+                  
+                  <!-- Text -->
+                  <p class="courses-loading-text">{{ $t('loading') }}</p>
+                  
+                  <!-- Skeleton Cards -->
+                  <div class="courses-skeleton-list">
+                    <div class="courses-skeleton-item" v-for="i in 4" :key="i" :style="{ animationDelay: `${i * 0.1}s` }">
+                      <div class="skeleton-line skeleton-title"></div>
+                      <div class="skeleton-line skeleton-subtitle"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p v-else>{{ $t('noCourses') }}</p>
+              
+              <!-- Empty State -->
+              <div v-else class="courses-empty-state">
+                <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p class="text-secondary text-sm">{{ $t('noCourses') }}</p>
+              </div>
             </div>
           </div>
 
@@ -1780,6 +1804,127 @@ onUnmounted(() => {
 
 .courses-list-content::-webkit-scrollbar-thumb:hover {
   background: #6366f1;
+}
+
+/* Courses Loading Animation */
+.courses-loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-row: 1 / -1;
+  grid-column: 1 / -1;
+  min-height: 300px;
+  padding: 20px;
+}
+
+.courses-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 280px;
+}
+
+.courses-loading-icon {
+  color: #6366f1;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.courses-loading-rays {
+  animation: rotate-rays 3s linear infinite;
+  transform-origin: center;
+}
+
+.courses-loading-center {
+  animation: pulse-center 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate-rays {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-center {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.9); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4));
+  }
+  50% { 
+    filter: drop-shadow(0 0 16px rgba(99, 102, 241, 0.7));
+  }
+}
+
+.courses-loading-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.courses-skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.courses-skeleton-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 12px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-line {
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--border-color) 0%,
+    var(--bg-tertiary) 50%,
+    var(--border-color) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+.skeleton-title {
+  height: 14px;
+  width: 70%;
+  margin-bottom: 8px;
+}
+
+.skeleton-subtitle {
+  height: 10px;
+  width: 50%;
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Empty State */
+.courses-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  grid-row: 1 / -1;
+  grid-column: 1 / -1;
+  min-height: 300px;
+  padding: 30px;
+  text-align: center;
 }
 
 .tag-conflict {
