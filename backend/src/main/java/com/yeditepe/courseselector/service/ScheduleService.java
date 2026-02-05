@@ -13,6 +13,10 @@ public class ScheduleService {
 
     private static final List<String> DAYS_ORDER = Arrays.asList("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("H:mm");
+    
+    // Çakışma toleransı: en fazla 1 çakışma, en fazla 60 dakika
+    private static final int MAX_OVERLAP_COUNT = 1;
+    private static final int MAX_OVERLAP_MINUTES = 60;
 
     /**
      * Main entry point that handles both AUTO and MANUAL modes
@@ -54,13 +58,30 @@ public class ScheduleService {
             return createErrorResult("Şu dersler bulunamadı: " + String.join(", ", notFound));
         }
 
-        // Check for conflicts
-        if (hasConflict(selectedCourses)) {
-            return createErrorResult("Seçilen derslerde çakışma var! Lütfen farklı section'lar seçin.");
+        // Check for conflicts with tolerance
+        List<TimeSlot> allSlots = new ArrayList<>();
+        for (Course course : selectedCourses) {
+            allSlots.addAll(getTimeSlotsWithCode(course));
+        }
+        OverlapInfo overlap = calculateOverlap(allSlots);
+        
+        if (!overlap.isAcceptable()) {
+            return createErrorResult("Seçilen derslerde kabul edilemez çakışma var! " +
+                "En fazla " + MAX_OVERLAP_COUNT + " çakışma ve " + MAX_OVERLAP_MINUTES + " dakika kabul edilir. " +
+                "Mevcut: " + overlap.count + " çakışma, " + overlap.totalMinutes + " dakika.");
         }
 
         ScheduleMetrics metrics = calculateMetrics(selectedCourses);
-        return createSuccessResult(selectedCourses, metrics);
+        ScheduleResult result = createSuccessResult(selectedCourses, metrics);
+        
+        if (overlap.count > 0) {
+            result.setMessage("⚠️ Program oluşturuldu! " + overlap.count + " çakışma var (" + 
+                overlap.totalMinutes + " dakika). Çakışan derslere dikkat edin.");
+            result.setHasOverlap(true);
+            result.setOverlapMinutes(overlap.totalMinutes);
+        }
+        
+        return result;
     }
 
     /**
@@ -89,9 +110,25 @@ public class ScheduleService {
         backtrackFindSchedules(coursesByCode, availableCodes, 0, new ArrayList<>(), new ArrayList<>(), validSchedules, 10);
         
         if (!validSchedules.isEmpty()) {
-            // Sort by score and return best
-            validSchedules.sort(Comparator.comparingInt(s -> s.metrics.getScore()));
-            return createSuccessResult(validSchedules.get(0).courses, validSchedules.get(0).metrics);
+            // Sort by: 1) overlap count, 2) overlap minutes, 3) score
+            // Önce çakışması olmayanlar, sonra az çakışması olanlar
+            validSchedules.sort(Comparator
+                .comparingInt((ScoredSchedule s) -> s.overlapCount)
+                .thenComparingInt(s -> s.totalOverlapMinutes)
+                .thenComparingInt(s -> s.metrics.getScore()));
+            
+            ScoredSchedule best = validSchedules.get(0);
+            ScheduleResult result = createSuccessResult(best.courses, best.metrics);
+            
+            // Çakışma varsa kullanıcıyı bilgilendir
+            if (best.overlapCount > 0) {
+                result.setMessage("⚠️ Program oluşturuldu! " + best.overlapCount + " çakışma var (" + 
+                    best.totalOverlapMinutes + " dakika). Çakışan derslere dikkat edin.");
+                result.setHasOverlap(true);
+                result.setOverlapMinutes(best.totalOverlapMinutes);
+            }
+            
+            return result;
         }
 
         // No complete solution - try greedy approach for partial solution
@@ -99,7 +136,8 @@ public class ScheduleService {
     }
     
     /**
-     * Backtracking algorithm with pruning - stops early when conflict detected
+     * Backtracking algorithm with overlap tolerance
+     * En fazla 1 çakışma ve en fazla 60 dakika çakışma kabul edilir
      */
     private void backtrackFindSchedules(Map<String, List<Course>> coursesByCode, 
                                         List<String> courseCodes, 
@@ -115,8 +153,10 @@ public class ScheduleService {
         
         // Successfully scheduled all courses
         if (index == courseCodes.size()) {
+            OverlapInfo overlap = calculateOverlap(currentSlots);
             ScheduleMetrics metrics = calculateMetrics(currentSchedule);
-            validSchedules.add(new ScoredSchedule(new ArrayList<>(currentSchedule), metrics));
+            validSchedules.add(new ScoredSchedule(new ArrayList<>(currentSchedule), metrics, 
+                                                   overlap.count, overlap.totalMinutes));
             return;
         }
         
@@ -129,11 +169,16 @@ public class ScheduleService {
         
         // Try each section for this course
         for (Course section : sections) {
-            List<TimeSlot> sectionSlots = getTimeSlots(section);
+            List<TimeSlot> sectionSlots = getTimeSlotsWithCode(section);
             
-            // Check if this section conflicts with current schedule
-            if (!hasConflictWithSlots(sectionSlots, currentSlots)) {
-                // No conflict - add and recurse
+            // Calculate overlap with current schedule
+            List<TimeSlot> testSlots = new ArrayList<>(currentSlots);
+            testSlots.addAll(sectionSlots);
+            OverlapInfo overlap = calculateOverlap(testSlots);
+            
+            // Check if overlap is within acceptable limits
+            if (overlap.isAcceptable()) {
+                // Acceptable - add and recurse
                 currentSchedule.add(section);
                 currentSlots.addAll(sectionSlots);
                 
@@ -148,7 +193,64 @@ public class ScheduleService {
     }
     
     /**
+     * Çakışma miktarını hesaplar
+     */
+    private OverlapInfo calculateOverlap(List<TimeSlot> slots) {
+        int overlapCount = 0;
+        int totalOverlapMinutes = 0;
+        Set<String> overlappingPairs = new HashSet<>();
+        
+        for (int i = 0; i < slots.size(); i++) {
+            for (int j = i + 1; j < slots.size(); j++) {
+                TimeSlot slot1 = slots.get(i);
+                TimeSlot slot2 = slots.get(j);
+                
+                // Aynı dersin farklı saatlerini sayma
+                if (slot1.courseCode != null && slot1.courseCode.equals(slot2.courseCode)) {
+                    continue;
+                }
+                
+                int overlapMinutes = slot1.getOverlapMinutes(slot2);
+                if (overlapMinutes > 0) {
+                    // Aynı çakışmayı birden fazla sayma
+                    String pairKey = slot1.courseCode + "-" + slot2.courseCode;
+                    String pairKeyReverse = slot2.courseCode + "-" + slot1.courseCode;
+                    
+                    if (!overlappingPairs.contains(pairKey) && !overlappingPairs.contains(pairKeyReverse)) {
+                        overlappingPairs.add(pairKey);
+                        overlapCount++;
+                        totalOverlapMinutes += overlapMinutes;
+                    }
+                }
+            }
+        }
+        
+        return new OverlapInfo(overlapCount, totalOverlapMinutes);
+    }
+    
+    /**
+     * Ders koduyla birlikte TimeSlot listesi oluşturur
+     */
+    private List<TimeSlot> getTimeSlotsWithCode(Course course) {
+        List<TimeSlot> slots = new ArrayList<>();
+        if (course.getDetails() == null) return slots;
+        
+        for (CourseDetail detail : course.getDetails()) {
+            if (detail.getDay() != null && detail.getStartHour() != null && detail.getEndHour() != null) {
+                slots.add(new TimeSlot(
+                    detail.getDay(),
+                    parseTime(detail.getStartHour()),
+                    parseTime(detail.getEndHour()),
+                    course.getCode()
+                ));
+            }
+        }
+        return slots;
+    }
+    
+    /**
      * Greedy approach for partial solution when complete solution doesn't exist
+     * Çakışma toleransını da dikkate alır
      */
     private ScheduleResult findPartialScheduleGreedy(Map<String, List<Course>> coursesByCode, List<String> courseCodes) {
         List<Course> selectedCourses = new ArrayList<>();
@@ -169,17 +271,25 @@ public class ScheduleService {
             Course bestSection = null;
             List<TimeSlot> bestSlots = null;
             int bestScore = Integer.MAX_VALUE;
+            OverlapInfo bestOverlap = null;
             
             for (Course section : sections) {
-                List<TimeSlot> sectionSlots = getTimeSlots(section);
+                List<TimeSlot> sectionSlots = getTimeSlotsWithCode(section);
                 
-                if (!hasConflictWithSlots(sectionSlots, usedSlots)) {
-                    // Calculate how well this fits (prefer sections that leave more room)
-                    int score = calculateFitScore(sectionSlots, usedSlots);
+                // Calculate overlap with current schedule
+                List<TimeSlot> testSlots = new ArrayList<>(usedSlots);
+                testSlots.addAll(sectionSlots);
+                OverlapInfo overlap = calculateOverlap(testSlots);
+                
+                // Check if overlap is acceptable
+                if (overlap.isAcceptable()) {
+                    // Calculate how well this fits (prefer sections with less overlap and leave more room)
+                    int score = calculateFitScore(sectionSlots, usedSlots) + (overlap.totalMinutes * 10);
                     if (score < bestScore) {
                         bestScore = score;
                         bestSection = section;
                         bestSlots = sectionSlots;
+                        bestOverlap = overlap;
                     }
                 }
             }
@@ -197,43 +307,34 @@ public class ScheduleService {
             return createErrorResult("Hiçbir ders kombinasyonu oluşturulamadı.");
         }
         
+        OverlapInfo finalOverlap = calculateOverlap(usedSlots);
         ScheduleMetrics metrics = calculateMetrics(selectedCourses);
         ScheduleResult result = createSuccessResult(selectedCourses, metrics);
         
+        StringBuilder message = new StringBuilder();
+        
+        if (finalOverlap.count > 0) {
+            message.append("⚠️ " + finalOverlap.count + " çakışma var (" + finalOverlap.totalMinutes + " dk). ");
+            result.setHasOverlap(true);
+            result.setOverlapMinutes(finalOverlap.totalMinutes);
+        }
+        
         if (!excludedCodes.isEmpty()) {
-            result.setMessage("⚠️ Tüm dersler sığmadı! " + excludedCodes.size() + " ders çıkarıldı: " + 
-                String.join(", ", excludedCodes) + ". " + selectedCourses.size() + " derslik program oluşturuldu.");
+            message.append("Tüm dersler sığmadı! " + excludedCodes.size() + " ders çıkarıldı: " + 
+                String.join(", ", excludedCodes) + ". ");
             result.setExcludedCourses(excludedCodes);
+        }
+        
+        if (message.length() > 0) {
+            message.append(selectedCourses.size() + " derslik program oluşturuldu.");
+            result.setMessage(message.toString());
         }
         
         return result;
     }
     
     private List<TimeSlot> getTimeSlots(Course course) {
-        List<TimeSlot> slots = new ArrayList<>();
-        if (course.getDetails() == null) return slots;
-        
-        for (CourseDetail detail : course.getDetails()) {
-            if (detail.getDay() != null && detail.getStartHour() != null && detail.getEndHour() != null) {
-                slots.add(new TimeSlot(
-                    detail.getDay(),
-                    parseTime(detail.getStartHour()),
-                    parseTime(detail.getEndHour())
-                ));
-            }
-        }
-        return slots;
-    }
-    
-    private boolean hasConflictWithSlots(List<TimeSlot> newSlots, List<TimeSlot> existingSlots) {
-        for (TimeSlot newSlot : newSlots) {
-            for (TimeSlot existing : existingSlots) {
-                if (newSlot.overlapsWith(existing)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return getTimeSlotsWithCode(course);
     }
     
     private int calculateFitScore(List<TimeSlot> sectionSlots, List<TimeSlot> usedSlots) {
@@ -255,33 +356,19 @@ public class ScheduleService {
         return score;
     }
 
-    private boolean hasConflict(List<Course> courses) {
+    /**
+     * Kabul edilemez çakışma olup olmadığını kontrol eder
+     * MAX_OVERLAP_COUNT ve MAX_OVERLAP_MINUTES sınırlarını aşarsa true döner
+     */
+    private boolean hasUnacceptableConflict(List<Course> courses) {
         List<TimeSlot> allSlots = new ArrayList<>();
 
         for (Course course : courses) {
-            if (course.getDetails() == null) continue;
-            
-            for (CourseDetail detail : course.getDetails()) {
-                if (detail.getDay() == null || detail.getStartHour() == null || detail.getEndHour() == null) {
-                    continue;
-                }
-                allSlots.add(new TimeSlot(
-                    detail.getDay(),
-                    parseTime(detail.getStartHour()),
-                    parseTime(detail.getEndHour())
-                ));
-            }
+            allSlots.addAll(getTimeSlotsWithCode(course));
         }
 
-        // Check for overlaps
-        for (int i = 0; i < allSlots.size(); i++) {
-            for (int j = i + 1; j < allSlots.size(); j++) {
-                if (allSlots.get(i).overlapsWith(allSlots.get(j))) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        OverlapInfo overlap = calculateOverlap(allSlots);
+        return !overlap.isAcceptable();
     }
 
     private ScheduleMetrics calculateMetrics(List<Course> courses) {
@@ -412,11 +499,20 @@ public class ScheduleService {
         String day;
         LocalTime start;
         LocalTime end;
+        String courseCode; // Hangi derse ait olduğunu takip etmek için
 
         TimeSlot(String day, LocalTime start, LocalTime end) {
             this.day = day;
             this.start = start;
             this.end = end;
+            this.courseCode = null;
+        }
+        
+        TimeSlot(String day, LocalTime start, LocalTime end, String courseCode) {
+            this.day = day;
+            this.start = start;
+            this.end = end;
+            this.courseCode = courseCode;
         }
 
         boolean overlapsWith(TimeSlot other) {
@@ -425,17 +521,56 @@ public class ScheduleService {
             }
             return this.start.isBefore(other.end) && other.start.isBefore(this.end);
         }
+        
+        /**
+         * Çakışma süresini dakika olarak hesaplar
+         */
+        int getOverlapMinutes(TimeSlot other) {
+            if (!this.day.equals(other.day)) {
+                return 0;
+            }
+            
+            LocalTime overlapStart = this.start.isAfter(other.start) ? this.start : other.start;
+            LocalTime overlapEnd = this.end.isBefore(other.end) ? this.end : other.end;
+            
+            if (overlapStart.isBefore(overlapEnd)) {
+                return (int) java.time.Duration.between(overlapStart, overlapEnd).toMinutes();
+            }
+            return 0;
+        }
     }
 
     private static class ScoredSchedule {
         List<Course> courses;
         ScheduleMetrics metrics;
         int adjustedScore;
+        int overlapCount;
+        int totalOverlapMinutes;
 
-        ScoredSchedule(List<Course> courses, ScheduleMetrics metrics) {
+        ScoredSchedule(List<Course> courses, ScheduleMetrics metrics, int overlapCount, int totalOverlapMinutes) {
             this.courses = courses;
             this.metrics = metrics;
-            this.adjustedScore = metrics.getScore();
+            this.overlapCount = overlapCount;
+            this.totalOverlapMinutes = totalOverlapMinutes;
+            // Çakışma varsa score'u artır (daha kötü)
+            this.adjustedScore = metrics.getScore() + (overlapCount * 200) + totalOverlapMinutes;
+        }
+    }
+    
+    /**
+     * Çakışma bilgisini tutan yardımcı sınıf
+     */
+    private static class OverlapInfo {
+        int count;
+        int totalMinutes;
+        
+        OverlapInfo(int count, int totalMinutes) {
+            this.count = count;
+            this.totalMinutes = totalMinutes;
+        }
+        
+        boolean isAcceptable() {
+            return count <= MAX_OVERLAP_COUNT && totalMinutes <= MAX_OVERLAP_MINUTES;
         }
     }
 }

@@ -19,4 +19,6 @@ public class ScheduleResult {
     private int totalEcts;
     private ScheduleMetrics metrics;
     private List<String> excludedCourses; // Courses that couldn't fit in the schedule
+    private boolean hasOverlap; // Çakışma var mı
+    private int overlapMinutes; // Toplam çakışma süresi (dakika)
 }
