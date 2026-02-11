@@ -3,23 +3,23 @@
     <div class="h-full app-bg flex flex-col">
       
       <!-- Top Bar -->
-      <header class="header-bg border-b border-color flex-shrink-0 px-3 sm:px-4 py-2 sm:py-3">
-        <div class="flex items-center justify-between">
+      <header class="header-bg border-b border-color flex-shrink-0">
+        <div class="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-2.5">
           <div class="flex items-center gap-2 sm:gap-3">
-            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
               <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
               </svg>
             </div>
             <div>
-              <h1 class="font-bold text-sm sm:text-base text-primary">{{ $t('appTitle') }}</h1>
-              <p class="text-[10px] sm:text-xs text-secondary hidden sm:block">{{ $t('university') }}</p>
+              <h1 class="font-bold text-sm sm:text-base text-primary leading-tight">{{ $t('appTitle') }}</h1>
+              <p class="text-[10px] sm:text-xs text-secondary hidden sm:block leading-tight">{{ $t('university') }}</p>
             </div>
           </div>
           
           <div class="flex items-center gap-1.5 sm:gap-3">
             <!-- Active Users Badge - Hidden on mobile -->
-            <div v-if="activeUserCount > 0" class="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl active-users-badge">
+            <div v-if="activeUserCount > 0" class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl active-users-badge">
               <span class="relative flex h-2.5 w-2.5">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
@@ -28,23 +28,23 @@
             </div>
             
             <!-- Language Toggle -->
-            <button @click="toggleLanguage" class="w-10 h-10 sm:h-11 sm:w-auto sm:px-4 rounded-xl toggle-btn transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
-              <span class="text-lg">{{ locale === 'tr' ? '🇹🇷' : '🇬🇧' }}</span>
+            <button @click="toggleLanguage" class="w-9 h-9 sm:h-10 sm:w-auto sm:px-3 rounded-xl toggle-btn transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
+              <span class="text-base sm:text-lg">{{ locale === 'tr' ? '🇹🇷' : '🇬🇧' }}</span>
               <span class="font-bold text-sm text-primary hidden sm:inline">{{ locale === 'tr' ? 'TR' : 'EN' }}</span>
             </button>
             
             <!-- Theme Toggle -->
-            <button @click="toggleTheme" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl toggle-btn transition-all duration-300 hover:scale-105 flex items-center justify-center">
-              <svg v-if="isDarkMode" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <button @click="toggleTheme" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl toggle-btn transition-all duration-300 hover:scale-105 flex items-center justify-center">
+              <svg v-if="isDarkMode" class="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
               </svg>
-              <svg v-else class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+              <svg v-else class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
               </svg>
             </button>
             
             <!-- Mobile Menu Toggle -->
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="w-10 h-10 rounded-xl toggle-btn lg:hidden transition-transform duration-300 hover:scale-105 flex items-center justify-center">
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="w-9 h-9 rounded-xl toggle-btn lg:hidden transition-transform duration-300 hover:scale-105 flex items-center justify-center">
               <svg v-if="!mobileMenuOpen" class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
               </svg>
@@ -53,6 +53,42 @@
               </svg>
             </button>
           </div>
+        </div>
+        
+        <!-- Tab Navigation in Top Bar -->
+        <div class="topbar-tabs">
+          <button 
+            @click="activeTab = 'schedule'"
+            class="topbar-tab"
+            :class="activeTab === 'schedule' ? 'active' : ''"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <span>{{ $t('scheduleTab') }}</span>
+          </button>
+          <button 
+            @click="activeTab = 'quota'"
+            class="topbar-tab"
+            :class="activeTab === 'quota' ? 'active' : ''"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+            <span>{{ $t('quotaTab') }}</span>
+            <span v-if="quotaWatchList.length > 0" class="topbar-tab-badge">{{ quotaWatchList.length }}</span>
+          </button>
+          <button 
+            @click="activeTab = 'grade'"
+            class="topbar-tab"
+            :class="activeTab === 'grade' ? 'active' : ''"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            </svg>
+            <span>{{ $t('gradeTab') }}</span>
+            <span v-if="gradeCourses.length > 0" class="topbar-tab-badge">{{ gradeCourses.length }}</span>
+          </button>
         </div>
       </header>
 
@@ -68,14 +104,14 @@
           <div class="flex-shrink-0 p-3 space-y-2 border-b border-color">
             <!-- Mobile Header with Close Button -->
             <div class="flex items-center justify-between lg:hidden mb-2">
-              <h2 class="text-lg font-bold text-primary">{{ $t('courses') }}</h2>
+              <h2 class="text-lg font-bold text-primary">{{ activeTab === 'schedule' ? $t('courses') : activeTab === 'quota' ? $t('quotaCheck') : $t('gradeCalculator') }}</h2>
               <button @click="mobileMenuOpen = false" class="p-2 rounded-lg toggle-btn">
                 <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
               </button>
             </div>
-            
+
             <!-- Aktif Dönem Card (Compact) -->
             <div class="season-card px-3 py-2 rounded-xl animate-fade-in flex items-center justify-between">
               <div class="flex items-center gap-2">
@@ -87,62 +123,117 @@
               <span class="text-sm font-bold" v-if="activeSeason">{{ activeSeason.year }} {{ getLocalizedName(activeSeason) }}</span>
             </div>
             
-            <!-- Bölüm Seçimi -->
-            <div class="space-y-1 relative">
-              <select 
-                v-model="departmentId" 
-                @change="onDepartmentChange"
-                :disabled="loadingCourses"
-                class="w-full px-3 py-2 input-bg rounded-xl text-primary text-sm focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer transition-all duration-200 disabled:opacity-70"
-              >
-                <option value="all">{{ $t('allDepartments') }}</option>
-                <option v-for="dept in filteredDepartments" :key="dept.id" :value="dept.id">
-                  {{ getLocalizedName(dept) }}
-                </option>
-              </select>
-              <!-- Loading indicator -->
-              <div v-if="loadingCourses" class="absolute right-3 top-1/2 -translate-y-1/2">
-                <svg class="animate-spin h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                </svg>
+            <!-- ===== SCHEDULE TAB CONTENT ===== -->
+            <template v-if="activeTab === 'schedule'">
+              <!-- Bölüm Seçimi -->
+              <div class="space-y-1 relative">
+                <select 
+                  v-model="departmentId" 
+                  @change="onDepartmentChange"
+                  :disabled="loadingCourses"
+                  class="w-full px-3 py-2 input-bg rounded-xl text-primary text-sm focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer transition-all duration-200 disabled:opacity-70"
+                >
+                  <option value="all">{{ $t('allDepartments') }}</option>
+                  <option v-for="dept in filteredDepartments" :key="dept.id" :value="dept.id">
+                    {{ getLocalizedName(dept) }}
+                  </option>
+                </select>
+                <!-- Loading indicator -->
+                <div v-if="loadingCourses" class="absolute right-3 top-1/2 -translate-y-1/2">
+                  <svg class="animate-spin h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                  </svg>
+                </div>
               </div>
-            </div>
 
-            <!-- Mod Seçimi -->
-            <div v-if="availableCourses.length > 0" class="animate-fade-in">
-              <div class="mode-toggle-container">
-                <div 
-                  class="mode-toggle-slider"
-                  :class="scheduleMode === 'MANUAL' ? 'slide-right' : 'slide-left'"
-                ></div>
-                <button 
-                  @click="scheduleMode = 'AUTO'"
-                  class="mode-toggle-btn"
-                  :class="scheduleMode === 'AUTO' ? 'active' : ''"
-                >
-                  <span class="mode-icon">🤖</span>
-                  <span>{{ $t('auto') }}</span>
-                </button>
-                <button 
-                  @click="scheduleMode = 'MANUAL'"
-                  class="mode-toggle-btn"
-                  :class="scheduleMode === 'MANUAL' ? 'active' : ''"
-                >
-                  <span class="mode-icon">✋</span>
-                  <span>{{ $t('manual') }}</span>
-                </button>
+              <!-- Mod Seçimi -->
+              <div v-if="availableCourses.length > 0" class="animate-fade-in">
+                <div class="mode-toggle-container">
+                  <div 
+                    class="mode-toggle-slider"
+                    :class="scheduleMode === 'MANUAL' ? 'slide-right' : 'slide-left'"
+                  ></div>
+                  <button 
+                    @click="scheduleMode = 'AUTO'"
+                    class="mode-toggle-btn"
+                    :class="scheduleMode === 'AUTO' ? 'active' : ''"
+                  >
+                    <span class="mode-icon">🤖</span>
+                    <span>{{ $t('auto') }}</span>
+                  </button>
+                  <button 
+                    @click="scheduleMode = 'MANUAL'"
+                    class="mode-toggle-btn"
+                    :class="scheduleMode === 'MANUAL' ? 'active' : ''"
+                  >
+                    <span class="mode-icon">✋</span>
+                    <span>{{ $t('manual') }}</span>
+                  </button>
+                </div>
+                <p class="mode-description">
+                  {{ scheduleMode === 'AUTO' ? $t('autoModeDesc') : $t('manualModeDesc') }}
+                </p>
               </div>
+            </template>
+
+            <!-- ===== QUOTA TAB CONTENT (TOP) ===== -->
+            <template v-if="activeTab === 'quota'">
+              <!-- Department Selector -->
+              <div class="space-y-1 relative">
+                <select 
+                  v-model="departmentId" 
+                  @change="onDepartmentChange"
+                  :disabled="loadingCourses"
+                  class="w-full px-3 py-2 input-bg rounded-xl text-primary text-sm focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer transition-all duration-200 disabled:opacity-70"
+                >
+                  <option value="all">{{ $t('allDepartments') }}</option>
+                  <option v-for="dept in filteredDepartments" :key="dept.id" :value="dept.id">
+                    {{ getLocalizedName(dept) }}
+                  </option>
+                </select>
+                <!-- Loading indicator -->
+                <div v-if="loadingCourses" class="absolute right-3 top-1/2 -translate-y-1/2">
+                  <svg class="animate-spin h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                  </svg>
+                </div>
+              </div>
+            </template>
+
+            <!-- ===== GRADE TAB CONTENT (TOP) ===== -->
+            <template v-if="activeTab === 'grade'">
               <p class="mode-description">
-                {{ scheduleMode === 'AUTO' ? $t('autoModeDesc') : $t('manualModeDesc') }}
+                {{ $t('gradeDescription') }}
               </p>
-            </div>
+              <!-- Department Selector -->
+              <div class="space-y-1 relative">
+                <select 
+                  v-model="departmentId" 
+                  @change="onDepartmentChange"
+                  :disabled="loadingCourses"
+                  class="w-full px-3 py-2 input-bg rounded-xl text-primary text-sm focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer transition-all duration-200 disabled:opacity-70"
+                >
+                  <option value="all">{{ $t('allDepartments') }}</option>
+                  <option v-for="dept in filteredDepartments" :key="dept.id" :value="dept.id">
+                    {{ getLocalizedName(dept) }}
+                  </option>
+                </select>
+                <div v-if="loadingCourses" class="absolute right-3 top-1/2 -translate-y-1/2">
+                  <svg class="animate-spin h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                  </svg>
+                </div>
+              </div>
+            </template>
           </div>
 
           <!-- ===== MIDDLE SCROLLABLE SECTION ===== -->
           <div class="flex-1 flex flex-col min-h-0 max-h-[45vh] p-3">
-            <!-- Ders Listesi -->
-            <div v-if="availableCourses.length > 0" class="courses-list-card animate-fade-in">
+            <!-- SCHEDULE TAB: Ders Listesi -->
+            <div v-if="activeTab === 'schedule' && availableCourses.length > 0" class="courses-list-card animate-fade-in">
               <!-- Header -->
               <div class="courses-list-header">
                 <span class="courses-list-title">{{ $t('courses') }}</span>
@@ -248,7 +339,8 @@
             </div>
 
             <!-- Boş Durum / Yükleniyor -->
-            <div v-else class="courses-list-card">
+            <!-- SCHEDULE TAB: Loading/Empty State -->
+            <div v-else-if="activeTab === 'schedule'" class="courses-list-card">
               <!-- Modern Loading State -->
               <div v-if="loadingCourses" class="courses-loading-container">
                 <div class="courses-loading-content">
@@ -282,12 +374,200 @@
                 <p class="text-secondary text-sm">{{ $t('noCourses') }}</p>
               </div>
             </div>
+
+            <!-- QUOTA TAB: Course List (same as schedule tab) -->
+            <div v-else-if="activeTab === 'quota' && availableCourses.length > 0" class="courses-list-card animate-fade-in">
+              <!-- Header -->
+              <div class="courses-list-header">
+                <span class="courses-list-title">{{ $t('courses') }}</span>
+                <span class="courses-list-count">{{ groupedCourses.length }}</span>
+              </div>
+              
+              <!-- Search -->
+              <input 
+                v-model="quotaCourseSearch"
+                type="text"
+                :placeholder="$t('searchPlaceholder')"
+                class="courses-search-input"
+              />
+              
+              <!-- Scrollable Course List -->
+              <div class="courses-list-content space-y-1">
+                <div 
+                  v-for="course in quotaFilteredCourses" 
+                  :key="course.code"
+                  class="rounded-xl overflow-hidden"
+                >
+                  <!-- Course Header - Click to expand -->
+                  <div 
+                    @click="toggleQuotaCourseExpand(course.code)"
+                    class="px-3 py-2 cursor-pointer flex items-center gap-2 course-item transition-all duration-200"
+                    :class="hasWatchedSections(course.code) ? 'selected' : ''"
+                  >
+                    <div 
+                      class="w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 checkbox"
+                      :class="hasWatchedSections(course.code) ? 'checked' : ''"
+                    >
+                      <svg v-if="hasWatchedSections(course.code)" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-1.5">
+                        <span class="font-mono text-xs font-bold text-primary">{{ course.code }}</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded-full badge-section font-semibold">{{ course.sections.length }}</span>
+                      </div>
+                      <p class="text-[10px] text-secondary truncate">{{ getLocalizedName(course) }}</p>
+                      <p v-if="getCourseInstructors(course)" class="text-[10px] text-indigo-400 truncate">👤 {{ getCourseInstructors(course) }}</p>
+                    </div>
+                    <!-- Expand Arrow -->
+                    <svg 
+                      class="w-4 h-4 text-secondary transition-transform duration-200"
+                      :class="quotaExpandedCourses.includes(course.code) ? 'rotate-180' : ''"
+                      fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    >
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </div>
+                  
+                  <!-- Sections - Expandable -->
+                  <div v-if="quotaExpandedCourses.includes(course.code)" class="bg-opacity-50 section-list animate-expand">
+                    <div 
+                      v-for="section in course.sections" 
+                      :key="section.section"
+                      @click="toggleWatchSection(course, section)"
+                      class="section-item cursor-pointer flex items-center gap-2 px-3 py-2 border-t border-color transition-all duration-200"
+                      :class="isInWatchList(course.code, section.section) ? 'section-selected' : ''"
+                    >
+                      <div 
+                        class="w-3.5 h-3.5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 checkbox-small"
+                        :class="isInWatchList(course.code, section.section) ? 'checked' : ''"
+                      >
+                        <svg v-if="isInWatchList(course.code, section.section)" class="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                        </svg>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                          <span class="text-xs font-semibold text-primary">{{ $t('group') }} {{ section.section }}</span>
+                          <span v-if="section.instructor" class="text-[10px] text-indigo-400">• {{ section.instructor }}</span>
+                        </div>
+                      </div>
+                      <!-- Quota badge if available -->
+                      <div v-if="getWatchedQuota(course.code, section.section)?.remaining != null" class="quota-mini-badge" :class="getWatchedQuota(course.code, section.section)?.remaining > 0 ? 'quota-green' : 'quota-red'">
+                        {{ getWatchedQuota(course.code, section.section)?.remaining }}/{{ getWatchedQuota(course.code, section.section)?.capacity }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- QUOTA TAB: Loading/Empty State -->
+            <div v-else-if="activeTab === 'quota'" class="courses-list-card">
+              <div v-if="loadingCourses" class="courses-loading-container">
+                <div class="courses-loading-content">
+                  <div class="courses-loading-icon">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-10 h-10">
+                      <path d="M12 6.5V3M12 21v-3.5M6.5 12H3M21 12h-3.5M18.364 5.636l-2.475 2.475M8.111 15.889l-2.475 2.475M5.636 5.636l2.475 2.475M15.889 15.889l2.475 2.475" 
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" class="courses-loading-rays"/>
+                      <circle cx="12" cy="12" r="4" fill="currentColor" class="courses-loading-center"/>
+                    </svg>
+                  </div>
+                  <p class="courses-loading-text">{{ $t('loading') }}</p>
+                </div>
+              </div>
+              <div v-else class="courses-empty-state">
+                <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p class="text-secondary text-sm">{{ $t('noCourses') }}</p>
+              </div>
+            </div>
+
+            <!-- GRADE TAB: Real Course List (expandable like quota) -->
+            <div v-else-if="activeTab === 'grade' && availableCourses.length > 0" class="courses-list-card animate-fade-in">
+              <div class="courses-list-header">
+                <span class="courses-list-title">{{ $t('courses') }}</span>
+                <span class="courses-list-count">{{ groupedCourses.length }}</span>
+              </div>
+              
+              <input 
+                v-model="gradeCourseSearch"
+                type="text"
+                :placeholder="$t('searchPlaceholder')"
+                class="courses-search-input"
+              />
+              
+              <div class="courses-list-content space-y-1">
+                <div 
+                  v-for="course in gradeFilteredCourses" 
+                  :key="course.code"
+                  class="rounded-xl overflow-hidden"
+                >
+                  <!-- Course Header - Click to select -->
+                  <div 
+                    @click="toggleGradeCourse(course)"
+                    class="px-3 py-2 cursor-pointer flex items-center gap-2 course-item transition-all duration-200"
+                    :class="isGradeCourseSelected(course.code) ? 'selected' : ''"
+                  >
+                    <div 
+                      class="w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 checkbox"
+                      :class="isGradeCourseSelected(course.code) ? 'checked' : ''"
+                    >
+                      <svg v-if="isGradeCourseSelected(course.code)" class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-1.5">
+                        <span class="font-mono text-xs font-bold text-primary">{{ course.code }}</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded-full badge-section font-semibold">{{ course.sections.length }}</span>
+                      </div>
+                      <p class="text-[10px] text-secondary truncate">{{ getLocalizedName(course) }}</p>
+                      <p v-if="getCourseInstructors(course)" class="text-[10px] text-indigo-400 truncate">👤 {{ getCourseInstructors(course) }}</p>
+                    </div>
+                    <!-- Grade badge if already calculated -->
+                    <span v-if="isGradeCourseSelected(course.code) && getGradeCourseScore(course.code) !== null" 
+                          class="text-xs font-black px-2 py-0.5 rounded-md flex-shrink-0"
+                          :class="getLetterGradeColor(getLetterGrade(getGradeCourseScore(course.code)))"
+                          style="background: rgba(255,255,255,0.05)">
+                      {{ getLetterGrade(getGradeCourseScore(course.code)) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- GRADE TAB: Loading/Empty State -->
+            <div v-else-if="activeTab === 'grade'" class="courses-list-card">
+              <div v-if="loadingCourses" class="courses-loading-container">
+                <div class="courses-loading-content">
+                  <div class="courses-loading-icon">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-10 h-10">
+                      <path d="M12 6.5V3M12 21v-3.5M6.5 12H3M21 12h-3.5M18.364 5.636l-2.475 2.475M8.111 15.889l-2.475 2.475M5.636 5.636l2.475 2.475M15.889 15.889l2.475 2.475" 
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" class="courses-loading-rays"/>
+                      <circle cx="12" cy="12" r="4" fill="currentColor" class="courses-loading-center"/>
+                    </svg>
+                  </div>
+                  <p class="courses-loading-text">{{ $t('loading') }}</p>
+                </div>
+              </div>
+              <div v-else class="courses-empty-state">
+                <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p class="text-secondary text-sm">{{ $t('noCourses') }}</p>
+              </div>
+            </div>
           </div>
 
           <!-- ===== BOTTOM FIXED SECTION ===== -->
           <div class="flex-1 p-3 border-t border-color flex flex-col gap-2 min-h-[120px] max-h-[35vh]">
+            
+            <!-- ===== SCHEDULE TAB BOTTOM ===== -->
             <!-- Seçilen Dersler - AUTO Mode -->
-            <div v-if="scheduleMode === 'AUTO' && selectedCoursesAuto.length > 0" class="animate-fade-in flex-1 min-h-0 flex flex-col">
+            <div v-if="activeTab === 'schedule' && scheduleMode === 'AUTO' && selectedCoursesAuto.length > 0" class="animate-fade-in flex-1 min-h-0 flex flex-col">
               <div class="selected-courses-card">
                 <!-- Header -->
                 <div class="selected-courses-header">
@@ -322,7 +602,7 @@
             </div>
 
             <!-- Seçilen Dersler - MANUAL Mode -->
-            <div v-if="scheduleMode === 'MANUAL' && selectedSections.length > 0" class="animate-fade-in flex-1 min-h-0 flex flex-col">
+            <div v-if="activeTab === 'schedule' && scheduleMode === 'MANUAL' && selectedSections.length > 0" class="animate-fade-in flex-1 min-h-0 flex flex-col">
               <div class="selected-courses-card">
                 <!-- Header -->
                 <div class="selected-courses-header">
@@ -364,6 +644,7 @@
 
             <!-- Program Oluştur -->
             <button 
+              v-if="activeTab === 'schedule'"
               @click="generateSchedule"
               :disabled="!canGenerate || generating"
               class="w-full py-2.5 btn-success text-white text-sm font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg mt-auto flex-shrink-0"
@@ -377,6 +658,103 @@
               </svg>
               {{ generating ? $t('generating') : $t('generateSchedule') }}
             </button>
+
+            <!-- ===== QUOTA TAB BOTTOM ===== -->
+            <!-- Watch List Display -->
+            <div v-if="activeTab === 'quota' && quotaWatchList.length > 0" class="animate-fade-in flex-1 min-h-0 flex flex-col">
+              <div class="selected-courses-card">
+                <!-- Header -->
+                <div class="selected-courses-header">
+                  <div class="flex items-center gap-2">
+                    <span class="selected-courses-title">{{ $t('watchList') }}</span>
+                    <span class="selected-courses-count">{{ quotaWatchList.length }}</span>
+                  </div>
+                  <button @click="clearWatchList" class="clear-all-btn">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    {{ $t('clearAll') }}
+                  </button>
+                </div>
+                
+                <!-- Watch List Tags with Quota -->
+                <div class="selected-courses-content">
+                  <span 
+                    v-for="(item, index) in quotaWatchList" 
+                    :key="`${item.code}-${item.section}`"
+                    class="quota-tag"
+                    :class="{ 'quota-tag-available': item.remaining > 0, 'quota-tag-full': item.remaining === 0 && item.remaining !== null }"
+                  >
+                    <span class="quota-tag-code">{{ item.code }}</span>
+                    <span class="quota-tag-section">G{{ item.section }}</span>
+                    <span v-if="item.remaining !== null" class="quota-tag-value">
+                      {{ item.remaining }}/{{ item.capacity }}
+                    </span>
+                    <button @click.stop="removeFromWatchList(index)" class="hover:opacity-70 transition-opacity">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Refresh Quotas Button -->
+            <button 
+              v-if="activeTab === 'quota'"
+              @click="refreshQuotas"
+              :disabled="quotaLoading || quotaWatchList.length === 0"
+              class="w-full py-2.5 btn-success text-white text-sm font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-lg mt-auto flex-shrink-0"
+            >
+              <svg v-if="quotaLoading" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+              </svg>
+              <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+              {{ quotaLoading ? $t('checking') : $t('refreshQuotas') }}
+              <span v-if="lastQuotaCheck && !quotaLoading" class="text-[10px] opacity-70 ml-1">({{ formatLastCheck(lastQuotaCheck) }})</span>
+            </button>
+
+            <!-- ===== GRADE TAB BOTTOM ===== -->
+            <div v-if="activeTab === 'grade' && gradeCourses.length > 0" class="animate-fade-in flex-1 min-h-0 flex flex-col">
+              <div class="selected-courses-card">
+                <div class="selected-courses-header">
+                  <div class="flex items-center gap-2">
+                    <span class="selected-courses-title">{{ $t('selected') }}</span>
+                    <span class="selected-courses-count">{{ gradeCourses.length }}</span>
+                  </div>
+                  <button @click="clearAllGrades" class="clear-all-btn">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    {{ $t('clearAll') }}
+                  </button>
+                </div>
+                <div class="selected-courses-content">
+                  <span 
+                    v-for="course in gradeCourses" 
+                    :key="course.id"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold rounded-lg tag-selected"
+                  >
+                    {{ course.code }}
+                    <span v-if="getCourseWeightedScore(course).filledWeight > 0" 
+                          class="text-[10px] font-black px-1 rounded"
+                          :class="getLetterGradeColor(getLetterGrade(getCourseWeightedScore(course).score))"
+                          style="background: rgba(255,255,255,0.1)">
+                      {{ getLetterGrade(getCourseWeightedScore(course).score) }}
+                    </span>
+                    <button @click.stop="removeGradeCourse(course.id)" class="hover:opacity-70 transition-opacity">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </aside>
 
@@ -398,8 +776,150 @@
             <p class="text-sm font-medium">{{ error }}</p>
           </div>
 
-          <!-- Sonuç -->
-          <div v-if="scheduleResult && scheduleResult.success" class="flex-1 overflow-auto p-4 space-y-4">
+          <!-- ===== QUOTA TAB: Main Content ===== -->
+          <div v-if="activeTab === 'quota'" class="flex-1 overflow-auto p-4 space-y-4">
+            <!-- Quota Stats -->
+            <div v-if="quotaWatchList.length > 0" class="stats-container animate-slide-down">
+              <div class="stats-grid">
+                <div class="stat-item stat-cyan">
+                  <span class="stat-value">{{ quotaWatchList.length }}</span>
+                  <span class="stat-label">{{ $t('watchedCourses') }}</span>
+                </div>
+                <div class="stat-item stat-green">
+                  <span class="stat-value">{{ quotaWatchList.filter(c => c.remaining > 0).length }}</span>
+                  <span class="stat-label">{{ $t('available') }}</span>
+                </div>
+                <div class="stat-item stat-red">
+                  <span class="stat-value">{{ quotaWatchList.filter(c => c.remaining === 0).length }}</span>
+                  <span class="stat-label">{{ $t('full') }}</span>
+                </div>
+                <div class="stat-item stat-purple">
+                  <span class="stat-value">{{ quotaWatchList.filter(c => c.remaining === null).length }}</span>
+                  <span class="stat-label">{{ $t('pending') }}</span>
+                </div>
+              </div>
+              
+              <div class="stats-footer">
+                <span class="stats-season">{{ activeSeason?.year }} {{ activeSeason ? getLocalizedName(activeSeason) : '' }}</span>
+                <span class="stats-date" v-if="lastQuotaCheck">{{ $t('lastChecked') }}: {{ formatLastCheck(lastQuotaCheck) }}</span>
+              </div>
+            </div>
+
+            <!-- Quota Courses Cards -->
+            <div v-if="quotaWatchList.length > 0" class="card-bg rounded-2xl p-5 animate-fade-in">
+              <h2 class="text-xl font-bold text-primary mb-5 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                  </svg>
+                </div>
+                {{ $t('watchedCoursesDetail') }}
+              </h2>
+              
+              <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                <div 
+                  v-for="(course, idx) in quotaWatchList" 
+                  :key="`${course.code}-${course.section}`"
+                  class="quota-detail-card rounded-2xl overflow-hidden animate-slide-up"
+                  :class="{ 'quota-available': course.remaining > 0, 'quota-full': course.remaining === 0, 'quota-pending': course.remaining === null }"
+                  :style="{ animationDelay: `${idx * 0.1}s` }"
+                >
+                  <!-- Course Header with gradient -->
+                  <div class="quota-detail-header p-4">
+                    <div class="flex items-start justify-between">
+                      <div class="flex-1 min-w-0 pr-2">
+                        <h3 class="font-black text-white text-lg tracking-wide">{{ course.code }}</h3>
+                        <p class="text-sm text-white/80 mt-1 course-name-truncate" :title="locale === 'tr' ? course.nameTr : course.nameEn">
+                          {{ locale === 'tr' ? course.nameTr : course.nameEn }}
+                        </p>
+                      </div>
+                      <span class="px-3 py-1.5 text-xs font-black rounded-lg bg-white/20 text-white backdrop-blur-sm flex-shrink-0">
+                        {{ $t('group') }} {{ course.section }}
+                      </span>
+                    </div>
+                    
+                    <!-- Quota Display in header -->
+                    <div class="flex gap-3 mt-auto pt-3">
+                      <span v-if="course.remaining !== null" class="px-4 py-1.5 rounded-lg text-white text-sm font-bold" 
+                            :class="course.remaining > 0 ? 'bg-green-500/30' : 'bg-red-500/30'">
+                        {{ $t('remaining') }}: {{ course.remaining }}
+                      </span>
+                      <span v-if="course.capacity !== null" class="px-4 py-1.5 rounded-lg bg-white/15 text-white text-sm font-semibold">
+                        {{ $t('capacity') }}: {{ course.capacity }}
+                      </span>
+                      <span v-if="course.loading" class="px-4 py-1.5 rounded-lg bg-white/15 text-white text-sm font-semibold flex items-center gap-2">
+                        <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        </svg>
+                        {{ $t('checking') }}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <!-- Course Body -->
+                  <div class="p-4 space-y-3">
+                    <!-- Quota Progress Bar -->
+                    <div v-if="course.capacity !== null && course.remaining !== null" class="quota-progress">
+                      <div class="flex justify-between text-xs mb-1">
+                        <span class="text-secondary">{{ $t('enrolled') }}</span>
+                        <span class="font-bold" :class="course.remaining > 0 ? 'text-green-500' : 'text-red-500'">
+                          {{ course.enrolled || (course.capacity - course.remaining) }}/{{ course.capacity }}
+                        </span>
+                      </div>
+                      <div class="h-2 rounded-full bg-gray-700 overflow-hidden">
+                        <div 
+                          class="h-full rounded-full transition-all duration-500"
+                          :class="course.remaining > 0 ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 'bg-gradient-to-r from-red-400 to-rose-500'"
+                          :style="{ width: `${course.capacity ? ((course.capacity - (course.remaining || 0)) / course.capacity) * 100 : 0}%` }"
+                        ></div>
+                      </div>
+                    </div>
+
+                    <!-- Instructor -->
+                    <div v-if="course.instructor" class="detail-item">
+                      <div class="detail-icon">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                      </div>
+                      <span class="detail-text">{{ course.instructor }}</span>
+                    </div>
+
+                    <!-- Remove Button -->
+                    <button 
+                      @click="removeFromWatchList(quotaWatchList.indexOf(course))"
+                      class="w-full mt-2 py-2 text-xs font-semibold rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all"
+                    >
+                      {{ $t('removeFromWatch') }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty State for Quota Tab -->
+            <div v-else class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
+              <div class="w-24 h-24 mb-6 rounded-3xl empty-icon flex items-center justify-center animate-float">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </div>
+              <h3 class="text-2xl font-bold text-primary mb-2">{{ $t('noWatchedCourses') }}</h3>
+              <p class="text-secondary text-base max-w-sm">
+                {{ $t('noWatchedCoursesMessage') }}
+              </p>
+              <button 
+                @click="mobileMenuOpen = true"
+                class="mt-6 px-6 py-3 btn-primary text-white text-sm font-bold rounded-xl lg:hidden hover:shadow-lg transition-all duration-300"
+              >
+                {{ $t('addCourseToWatch') }}
+              </button>
+            </div>
+          </div>
+
+          <!-- ===== SCHEDULE TAB: Sonuç ===== -->
+          <div v-else-if="activeTab === 'schedule' && scheduleResult && scheduleResult.success" class="flex-1 overflow-auto p-4 space-y-4">
             
             <!-- Uyarılar Grid -->
             <div v-if="scheduleResult.hasOverlap || (scheduleResult.excludedCourses && scheduleResult.excludedCourses.length > 0)" 
@@ -551,6 +1071,30 @@
                     </div>
                   </div>
                   
+                  <!-- Quota Info Section -->
+                  <div v-if="course.quota != null" class="px-4 pt-4 pb-1">
+                    <div class="quota-progress">
+                      <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold flex items-center gap-1.5" :class="(course.quota - (course.fullQuota || 0)) > 0 ? 'text-green-500' : 'text-red-500'">
+                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          </svg>
+                          {{ $t('quota') }}: {{ course.quota - (course.fullQuota || 0) }}/{{ course.quota }}
+                        </span>
+                        <span class="text-[10px] font-semibold text-secondary">
+                          {{ $t('enrolled') }}: {{ course.fullQuota || 0 }}
+                        </span>
+                      </div>
+                      <div class="h-2 rounded-full bg-gray-700 overflow-hidden">
+                        <div 
+                          class="h-full rounded-full transition-all duration-500"
+                          :class="(course.quota - (course.fullQuota || 0)) > 0 ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 'bg-gradient-to-r from-red-400 to-rose-500'"
+                          :style="{ width: `${course.quota ? ((course.fullQuota || 0) / course.quota) * 100 : 0}%` }"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- Course Details (Lectures, Labs, etc.) -->
                   <div class="p-4 space-y-3">
                     <div 
@@ -589,8 +1133,8 @@
             </div>
           </div>
 
-          <!-- Oluşturuluyor Durumu -->
-          <div v-else-if="generating" class="flex-1 flex flex-col items-center justify-center text-center px-6">
+          <!-- Oluşturuluyor Durumu (Schedule Tab Only) -->
+          <div v-else-if="activeTab === 'schedule' && generating" class="flex-1 flex flex-col items-center justify-center text-center px-6">
             <div class="generating-animation mb-8">
               <!-- Animated Calendar Icon -->
               <div class="calendar-container">
@@ -627,8 +1171,215 @@
             </div>
           </div>
 
-          <!-- Boş Durum -->
-          <div v-else class="flex-1 flex flex-col items-center justify-center text-center px-6">
+          <!-- ===== GRADE TAB: Main Content ===== -->
+          <div v-else-if="activeTab === 'grade'" class="flex-1 overflow-auto p-4 space-y-4">
+            <!-- Grade Stats -->
+            <div v-if="gradeCourses.length > 0" class="stats-container animate-slide-down">
+              <div class="stats-grid">
+                <div class="stat-item stat-cyan">
+                  <span class="stat-value">{{ gradeStats.total }}</span>
+                  <span class="stat-label">{{ $t('courseCount') }}</span>
+                </div>
+                <div class="stat-item stat-green">
+                  <span class="stat-value">{{ gradeStats.calculated }}</span>
+                  <span class="stat-label">{{ $t('calculated') }}</span>
+                </div>
+                <div class="stat-item stat-red">
+                  <span class="stat-value">{{ gradeStats.notCalculated }}</span>
+                  <span class="stat-label">{{ $t('notCalculated') }}</span>
+                </div>
+                <div class="stat-item stat-purple">
+                  <span class="stat-value">{{ gradeStats.average }}</span>
+                  <span class="stat-label">{{ $t('averageGrade') }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grade Course Cards -->
+            <div v-if="gradeCourses.length > 0" class="space-y-5">
+              <div 
+                v-for="(course, idx) in gradeCourses" 
+                :key="course.id"
+                class="grade-card card-bg rounded-2xl overflow-hidden animate-slide-up"
+                :style="{ animationDelay: `${idx * 0.08}s` }"
+              >
+                <!-- Card Header -->
+                <div class="grade-card-header p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                      </div>
+                      <div class="min-w-0">
+                        <h3 class="font-black text-white text-lg tracking-wide">{{ course.code }}</h3>
+                        <p class="text-sm text-white/70 truncate">{{ locale === 'tr' ? course.name : (course.nameEn || course.name) }}</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                      <!-- Weighted Score -->
+                      <div v-if="getCourseWeightedScore(course).filledWeight > 0" class="text-right">
+                        <div class="text-2xl font-black text-white leading-none">{{ getCourseWeightedScore(course).score.toFixed(1) }}</div>
+                        <div class="text-xs font-bold mt-0.5" :class="getLetterGradeColor(getLetterGrade(getCourseWeightedScore(course).score))">
+                          {{ getLetterGrade(getCourseWeightedScore(course).score) }}
+                        </div>
+                      </div>
+                      <div v-else class="text-right">
+                        <div class="text-xl font-bold text-white/40">--</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Weight Status Bar -->
+                  <div class="mt-3">
+                    <div class="flex items-center justify-between text-xs mb-1">
+                      <span class="text-white/70">{{ $t('totalWeight') }}</span>
+                      <span class="font-bold" :class="getCourseWeightTotal(course) === 100 ? 'text-green-300' : 'text-yellow-300'">
+                        %{{ getCourseWeightTotal(course) }}
+                      </span>
+                    </div>
+                    <div class="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                      <div 
+                        class="h-full rounded-full transition-all duration-500"
+                        :class="getCourseWeightTotal(course) === 100 ? 'bg-green-400' : getCourseWeightTotal(course) > 100 ? 'bg-red-400' : 'bg-yellow-400'"
+                        :style="{ width: `${Math.min(getCourseWeightTotal(course), 100)}%` }"
+                      ></div>
+                    </div>
+                    <div v-if="getCourseWeightTotal(course) !== 100" class="text-[10px] mt-1 text-yellow-300/70">
+                      ⚠️ {{ $t('weightWarning') }}
+                    </div>
+                    <div v-else class="text-[10px] mt-1 text-green-300/70">
+                      ✓ {{ $t('weightPerfect') }}
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Components Table -->
+                <div class="p-4 space-y-2">
+                  <!-- Table Header -->
+                  <div class="grid grid-cols-12 gap-2 px-2 mb-1">
+                    <div class="col-span-5 text-[10px] font-bold text-secondary uppercase tracking-wider">{{ $t('componentName') }}</div>
+                    <div class="col-span-3 text-[10px] font-bold text-secondary uppercase tracking-wider text-center">{{ $t('weight') }}</div>
+                    <div class="col-span-3 text-[10px] font-bold text-secondary uppercase tracking-wider text-center">{{ $t('score') }}</div>
+                    <div class="col-span-1"></div>
+                  </div>
+                  
+                  <!-- Component Rows -->
+                  <div 
+                    v-for="comp in course.components" 
+                    :key="comp.id"
+                    class="grade-component-row grid grid-cols-12 gap-2 items-center p-2 rounded-xl"
+                  >
+                    <div class="col-span-5">
+                      <input 
+                        v-model="comp.name" 
+                        @change="saveGradeCourses"
+                        class="w-full px-2 py-1.5 input-bg rounded-lg text-primary text-xs font-semibold outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
+                        :placeholder="$t('componentName')"
+                      />
+                    </div>
+                    <div class="col-span-3">
+                      <div class="relative">
+                        <input 
+                          v-model.number="comp.weight" 
+                          @change="saveGradeCourses"
+                          type="number" 
+                          min="0" 
+                          max="100"
+                          class="w-full px-2 py-1.5 input-bg rounded-lg text-primary text-xs font-bold text-center outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
+                        />
+                        <span class="absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] text-secondary font-bold pointer-events-none">%</span>
+                      </div>
+                    </div>
+                    <div class="col-span-3">
+                      <input 
+                        v-model.number="comp.score" 
+                        @change="saveGradeCourses"
+                        type="number" 
+                        min="0" 
+                        max="100"
+                        class="w-full px-2 py-1.5 input-bg rounded-lg text-primary text-xs font-bold text-center outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
+                        :placeholder="'-'"
+                      />
+                    </div>
+                    <div class="col-span-1 flex justify-center">
+                      <button 
+                        @click="removeGradeComponent(course.id, comp.id)" 
+                        class="p-1 rounded-md hover:bg-red-500/20 text-secondary hover:text-red-400 transition-all"
+                        :title="$t('removeComponent')"
+                      >
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Add Component Button -->
+                  <button 
+                    @click="addGradeComponent(course.id)" 
+                    class="w-full py-2 mt-2 text-xs font-semibold rounded-xl border-2 border-dashed border-color text-secondary hover:text-indigo-400 hover:border-indigo-500/50 transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    {{ $t('addComponent') }}
+                  </button>
+                  
+                  <!-- Course Result Summary -->
+                  <div v-if="getCourseWeightedScore(course).filledWeight > 0" class="mt-3 p-3 rounded-xl grade-result-summary">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-secondary">{{ $t('weightedTotal') }}:</span>
+                        <span class="text-lg font-black" :class="getLetterGradeColor(getLetterGrade(getCourseWeightedScore(course).score))">
+                          {{ getCourseWeightedScore(course).score.toFixed(2) }}
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-secondary">{{ $t('letterGrade') }}:</span>
+                        <span class="text-xl font-black px-3 py-1 rounded-lg" 
+                              :class="getLetterGradeColor(getLetterGrade(getCourseWeightedScore(course).score))"
+                              style="background: rgba(255,255,255,0.05)">
+                          {{ getLetterGrade(getCourseWeightedScore(course).score) }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Remove Course Button -->
+                  <button 
+                    @click="removeGradeCourse(course.id)" 
+                    class="w-full mt-2 py-2 text-xs font-semibold rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all"
+                  >
+                    {{ $t('removeCourse') }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <div v-else class="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
+              <div class="w-24 h-24 mb-6 rounded-3xl empty-icon flex items-center justify-center animate-float">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <h3 class="text-2xl font-bold text-primary mb-2">{{ $t('noGradeCourses') }}</h3>
+              <p class="text-secondary text-base max-w-sm">
+                {{ $t('noGradeCoursesMessage') }}
+              </p>
+              <button 
+                @click="mobileMenuOpen = true"
+                class="mt-6 px-6 py-3 btn-primary text-white text-sm font-bold rounded-xl lg:hidden hover:shadow-lg transition-all duration-300"
+              >
+                {{ $t('addCourse') }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Boş Durum (Schedule Tab Only) -->
+          <div v-else-if="activeTab === 'schedule'" class="flex-1 flex flex-col items-center justify-center text-center px-6">
             <div class="w-24 h-24 mb-6 rounded-3xl empty-icon flex items-center justify-center animate-float">
               <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -648,6 +1399,7 @@
         </main>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -666,7 +1418,10 @@ const STORAGE_KEYS = {
   SCHEDULE_MODE: 'cs_scheduleMode',
   SELECTED_COURSES_AUTO: 'cs_selectedCoursesAuto',
   SELECTED_SECTIONS: 'cs_selectedSections',
-  SCHEDULE_RESULT: 'cs_scheduleResult'
+  SCHEDULE_RESULT: 'cs_scheduleResult',
+  QUOTA_WATCH_LIST: 'cs_quotaWatchList',
+  ACTIVE_TAB: 'cs_activeTab',
+  GRADE_COURSES: 'cs_gradeCourses'
 }
 
 const toggleLanguage = () => {
@@ -765,6 +1520,21 @@ const error = ref('')
 // Schedule Mode: 'AUTO' or 'MANUAL'
 const scheduleMode = ref('AUTO')
 
+// Active Tab: 'schedule' or 'quota'
+const activeTab = ref('schedule')
+
+// Quota Watch List State
+const quotaWatchList = ref([])
+const quotaLoading = ref(false)
+const lastQuotaCheck = ref(null)
+const quotaCourseSearch = ref('')
+const quotaExpandedCourses = ref([])
+
+// Grade Calculator State
+const gradeCourses = ref([])
+const gradeCourseSearch = ref('')
+const gradeExpandedCourses = ref([])
+
 // Loading states
 const loadingSeasons = ref(false)
 const loadingDepartments = ref(false)
@@ -835,6 +1605,7 @@ const groupedCourses = computed(() => {
         nameEn: course.nameEn,
         credit: course.credit,
         ects: course.ects,
+        departmentId: course.departmentId,
         sections: []
       })
     }
@@ -844,7 +1615,10 @@ const groupedCourses = computed(() => {
     courseMap.get(course.code).sections.push({
       section: course.section,
       instructor: instructor,
-      details: course.details || []
+      details: course.details || [],
+      fullQuota: course.fullQuota,
+      quota: course.quota,
+      departmentId: course.departmentId
     })
   })
   
@@ -876,6 +1650,89 @@ const filteredCourses = computed(() => {
     return matchesCode || matchesName || matchesInstructor
   })
 })
+
+// Quota tab filtered courses
+const quotaFilteredCourses = computed(() => {
+  if (!quotaCourseSearch.value) return groupedCourses.value
+  const search = quotaCourseSearch.value.toLowerCase().replace(/\s+/g, '')
+  const searchLower = quotaCourseSearch.value.toLowerCase()
+  
+  return groupedCourses.value.filter(c => {
+    const codeNoSpace = c.code.toLowerCase().replace(/\s+/g, '')
+    const matchesCode = codeNoSpace.includes(search) || c.code.toLowerCase().includes(searchLower)
+    const matchesName = c.name?.toLowerCase().includes(searchLower) || c.nameEn?.toLowerCase().includes(searchLower)
+    const matchesInstructor = c.sections.some(section => 
+      section.instructor?.toLowerCase().includes(searchLower)
+    )
+    return matchesCode || matchesName || matchesInstructor
+  })
+})
+
+// Check if course section is already in watch list
+const isInWatchList = (code, section) => {
+  return quotaWatchList.value.some(item => item.code === code && item.section === section)
+}
+
+// Check if course has any watched sections
+const hasWatchedSections = (code) => {
+  return quotaWatchList.value.some(item => item.code === code)
+}
+
+// Get quota info for a watched section
+const getWatchedQuota = (code, section) => {
+  return quotaWatchList.value.find(item => item.code === code && item.section === section)
+}
+
+// Toggle course expansion in quota tab
+const toggleQuotaCourseExpand = (code) => {
+  const idx = quotaExpandedCourses.value.indexOf(code)
+  if (idx === -1) {
+    quotaExpandedCourses.value.push(code)
+  } else {
+    quotaExpandedCourses.value.splice(idx, 1)
+  }
+}
+
+// Toggle section in watch list
+const toggleWatchSection = (course, section) => {
+  const idx = quotaWatchList.value.findIndex(
+    item => item.code === course.code && item.section === section.section
+  )
+  
+  if (idx === -1) {
+    // Get the departmentId - prefer from section, then from course, then from current selection
+    const deptId = section.departmentId || course.departmentId || (departmentId.value !== 'all' ? departmentId.value : null)
+    
+    // Use quota data from section if available (API: quota = total capacity, fullQuota = enrolled)
+    const cap = section.quota != null ? section.quota : null
+    const enr = section.fullQuota != null ? section.fullQuota : null
+    const rem = (cap != null && enr != null) ? cap - enr : null
+    
+    // Add to watch list
+    quotaWatchList.value.push({
+      code: course.code,
+      section: section.section,
+      nameEn: course.nameEn,
+      nameTr: course.name,
+      departmentId: deptId,
+      instructor: section.instructor,
+      capacity: cap,
+      enrolled: enr,
+      remaining: rem,
+      loading: false
+    })
+  } else {
+    // Remove from watch list
+    quotaWatchList.value.splice(idx, 1)
+  }
+  saveQuotaWatchList()
+}
+
+// Clear all from watch list
+const clearWatchList = () => {
+  quotaWatchList.value = []
+  saveQuotaWatchList()
+}
 
 const canGenerate = computed(() => {
   if (!selectedSeason.value || !departmentId.value) return false
@@ -1128,12 +1985,298 @@ const generateSchedule = async () => {
   }
 }
 
+// ===== QUOTA WATCH LIST FUNCTIONS =====
+
+// Save quota watch list to localStorage
+const saveQuotaWatchList = () => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.QUOTA_WATCH_LIST, JSON.stringify(quotaWatchList.value))
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_TAB, activeTab.value)
+  } catch (e) {
+    console.warn('Failed to save quota watch list:', e)
+  }
+}
+
+// Load quota watch list from localStorage
+const loadQuotaWatchList = () => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEYS.QUOTA_WATCH_LIST)
+    const savedTab = localStorage.getItem(STORAGE_KEYS.ACTIVE_TAB)
+    if (saved) quotaWatchList.value = JSON.parse(saved)
+    if (savedTab) activeTab.value = savedTab
+  } catch (e) {
+    console.warn('Failed to load quota watch list:', e)
+  }
+}
+
+// Remove from watch list
+const removeFromWatchList = (index) => {
+  quotaWatchList.value.splice(index, 1)
+  saveQuotaWatchList()
+}
+
+// Refresh quotas from API
+const refreshQuotas = async () => {
+  if (quotaWatchList.value.length === 0) return
+  
+  quotaLoading.value = true
+  
+  // Mark all items as loading
+  quotaWatchList.value.forEach(item => {
+    item.loading = true
+  })
+  
+  try {
+    const coursesToCheck = quotaWatchList.value
+      .filter(item => item.departmentId && item.departmentId !== 'all')
+      .map(item => ({
+        code: item.code,
+        section: item.section,
+        departmentId: parseInt(item.departmentId)
+      }))
+    
+    // If no courses to check (all have invalid departmentId), skip API call
+    if (coursesToCheck.length === 0) {
+      console.warn('No courses with valid departmentId to check')
+      quotaWatchList.value.forEach(item => {
+        item.loading = false
+      })
+      quotaLoading.value = false
+      return
+    }
+    
+    const result = await courseApi.checkQuotas(selectedSeason.value, coursesToCheck)
+    
+    if (result.success && result.quotas) {
+      // Update watch list with fresh data
+      result.quotas.forEach(quota => {
+        const item = quotaWatchList.value.find(
+          i => i.code === quota.code && i.section === quota.section
+        )
+        if (item) {
+          item.capacity = quota.capacity
+          item.enrolled = quota.enrolled
+          item.remaining = quota.remaining
+          item.instructor = quota.instructor || item.instructor
+          item.loading = false
+        }
+      })
+    }
+    
+    lastQuotaCheck.value = Date.now()
+    saveQuotaWatchList()
+  } catch (e) {
+    console.error('Failed to refresh quotas:', e)
+    error.value = t('errorCheckingQuotas', { message: e.message })
+  } finally {
+    quotaLoading.value = false
+    quotaWatchList.value.forEach(item => {
+      item.loading = false
+    })
+  }
+}
+
+// Format last check time
+const formatLastCheck = (timestamp) => {
+  if (!timestamp) return ''
+  const diff = Math.floor((Date.now() - timestamp) / 1000)
+  if (diff < 60) return t('justNow')
+  if (diff < 3600) return t('minutesAgo', { count: Math.floor(diff / 60) })
+  return new Date(timestamp).toLocaleTimeString(locale.value === 'tr' ? 'tr-TR' : 'en-US', {
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+// ===== GRADE CALCULATOR FUNCTIONS =====
+
+let gradeIdCounter = 1
+
+const saveGradeCourses = () => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.GRADE_COURSES, JSON.stringify(gradeCourses.value))
+  } catch (e) {
+    console.warn('Failed to save grade courses:', e)
+  }
+}
+
+const loadGradeCourses = () => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEYS.GRADE_COURSES)
+    if (saved) {
+      gradeCourses.value = JSON.parse(saved)
+      // Find max id to continue counter
+      gradeCourses.value.forEach(c => {
+        if (c.id >= gradeIdCounter) gradeIdCounter = c.id + 1
+        c.components.forEach(comp => {
+          if (comp.id >= gradeIdCounter) gradeIdCounter = comp.id + 1
+        })
+      })
+    }
+  } catch (e) {
+    console.warn('Failed to load grade courses:', e)
+  }
+}
+
+// Grade tab filtered courses
+const gradeFilteredCourses = computed(() => {
+  if (!gradeCourseSearch.value) return groupedCourses.value
+  const search = gradeCourseSearch.value.toLowerCase().replace(/\s+/g, '')
+  const searchLower = gradeCourseSearch.value.toLowerCase()
+  
+  return groupedCourses.value.filter(c => {
+    const codeNoSpace = c.code.toLowerCase().replace(/\s+/g, '')
+    const matchesCode = codeNoSpace.includes(search) || c.code.toLowerCase().includes(searchLower)
+    const matchesName = c.name?.toLowerCase().includes(searchLower) || c.nameEn?.toLowerCase().includes(searchLower)
+    return matchesCode || matchesName
+  })
+})
+
+const isGradeCourseSelected = (code) => {
+  return gradeCourses.value.some(c => c.code === code)
+}
+
+const getGradeCourseScore = (code) => {
+  const course = gradeCourses.value.find(c => c.code === code)
+  if (!course) return null
+  const { score, filledWeight } = getCourseWeightedScore(course)
+  return filledWeight > 0 ? score : null
+}
+
+const toggleGradeCourseExpand = (code) => {
+  const idx = gradeExpandedCourses.value.indexOf(code)
+  if (idx === -1) {
+    gradeExpandedCourses.value.push(code)
+  } else {
+    gradeExpandedCourses.value.splice(idx, 1)
+  }
+}
+
+const toggleGradeCourse = (course) => {
+  const idx = gradeCourses.value.findIndex(c => c.code === course.code)
+  if (idx === -1) {
+    // Add course with default components
+    gradeCourses.value.push({
+      id: gradeIdCounter++,
+      code: course.code,
+      name: course.name,
+      nameEn: course.nameEn,
+      credit: course.credit,
+      ects: course.ects,
+      components: [
+        { id: gradeIdCounter++, name: t('defaultComponents.midterm'), weight: 30, score: null },
+        { id: gradeIdCounter++, name: t('defaultComponents.final'), weight: 40, score: null },
+        { id: gradeIdCounter++, name: t('defaultComponents.homework'), weight: 30, score: null }
+      ]
+    })
+  } else {
+    gradeCourses.value.splice(idx, 1)
+  }
+  saveGradeCourses()
+}
+
+const removeGradeCourse = (courseId) => {
+  gradeCourses.value = gradeCourses.value.filter(c => c.id !== courseId)
+  saveGradeCourses()
+}
+
+const addGradeComponent = (courseId) => {
+  const course = gradeCourses.value.find(c => c.id === courseId)
+  if (course) {
+    course.components.push({
+      id: gradeIdCounter++,
+      name: '',
+      weight: 0,
+      score: null
+    })
+    saveGradeCourses()
+  }
+}
+
+const removeGradeComponent = (courseId, componentId) => {
+  const course = gradeCourses.value.find(c => c.id === courseId)
+  if (course) {
+    course.components = course.components.filter(c => c.id !== componentId)
+    saveGradeCourses()
+  }
+}
+
+const clearAllGrades = () => {
+  gradeCourses.value = []
+  saveGradeCourses()
+}
+
+const getCourseWeightTotal = (course) => {
+  return course.components.reduce((sum, c) => sum + (parseFloat(c.weight) || 0), 0)
+}
+
+const getCourseWeightedScore = (course) => {
+  let totalWeightedScore = 0
+  let totalWeight = 0
+  
+  course.components.forEach(comp => {
+    const w = parseFloat(comp.weight) || 0
+    const s = parseFloat(comp.score)
+    if (!isNaN(s) && s !== null && comp.score !== null && comp.score !== '') {
+      totalWeightedScore += (s * w) / 100
+      totalWeight += w
+    }
+  })
+  
+  return { score: totalWeightedScore, filledWeight: totalWeight }
+}
+
+const getLetterGrade = (score) => {
+  if (score === null || score === undefined || isNaN(score)) return '-'
+  if (score >= 90) return 'AA'
+  if (score >= 85) return 'BA'
+  if (score >= 80) return 'BB'
+  if (score >= 75) return 'CB'
+  if (score >= 70) return 'CC'
+  if (score >= 65) return 'DC'
+  if (score >= 60) return 'DD'
+  if (score >= 50) return 'FD'
+  return 'FF'
+}
+
+const getLetterGradeColor = (letter) => {
+  if (letter === 'AA' || letter === 'BA') return 'text-green-400'
+  if (letter === 'BB' || letter === 'CB') return 'text-emerald-400'
+  if (letter === 'CC' || letter === 'DC') return 'text-yellow-400'
+  if (letter === 'DD' || letter === 'FD') return 'text-orange-400'
+  if (letter === 'FF') return 'text-red-400'
+  return 'text-secondary'
+}
+
+const gradeStats = computed(() => {
+  const total = gradeCourses.value.length
+  let calculatedCount = 0
+  let totalScore = 0
+  
+  gradeCourses.value.forEach(course => {
+    const { score, filledWeight } = getCourseWeightedScore(course)
+    if (filledWeight > 0) {
+      calculatedCount++
+      totalScore += score
+    }
+  })
+  
+  return {
+    total,
+    calculated: calculatedCount,
+    notCalculated: total - calculatedCount,
+    average: calculatedCount > 0 ? (totalScore / calculatedCount).toFixed(1) : '-'
+  }
+})
+
 // Watchers for auto-save
 watch(departmentId, saveState)
 watch(scheduleMode, saveState)
 watch(selectedCoursesAuto, saveState, { deep: true })
 watch(selectedSections, saveState, { deep: true })
 watch(scheduleResult, saveState, { deep: true })
+watch(activeTab, saveQuotaWatchList)
+watch(gradeCourses, saveGradeCourses, { deep: true })
 
 // Lifecycle
 onMounted(async () => {
@@ -1142,6 +2285,12 @@ onMounted(async () => {
   
   // Load saved state before fetching data
   const hasSavedState = loadSavedState()
+  
+  // Load quota watch list
+  loadQuotaWatchList()
+  
+  // Load grade courses
+  loadGradeCourses()
   
   await loadSeasons()
   await loadDepartments()
@@ -1154,6 +2303,11 @@ onMounted(async () => {
   // Show a message if state was restored
   if (hasSavedState && (selectedCoursesAuto.value.length > 0 || selectedSections.value.length > 0)) {
     console.log('Previous session restored')
+  }
+  
+  // Auto-check quotas if watch list has items
+  if (quotaWatchList.value.length > 0) {
+    refreshQuotas()
   }
 })
 
@@ -2241,5 +3395,478 @@ onUnmounted(() => {
   .warning-tip {
     margin-left: 0;
   }
+}
+
+/* ===== TOP BAR TABS ===== */
+.topbar-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.topbar-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.topbar-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.topbar-tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+}
+
+.topbar-tab.active {
+  color: #818cf8;
+  border-bottom-color: #6366f1;
+  background: transparent;
+}
+
+.topbar-tab-badge {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  text-align: center;
+}
+
+.topbar-tab.active .topbar-tab-badge {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+@media (max-width: 640px) {
+  .topbar-tab {
+    padding: 6px 10px;
+    font-size: 12px;
+    gap: 4px;
+  }
+  
+  .topbar-tab svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* ===== OLD TAB NAVIGATION (kept for sidebar mobile) ===== */
+.tab-navigation {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-secondary);
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.tab-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* ===== QUOTA WATCH LIST ===== */
+.quota-info-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.quota-watch-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.quota-watch-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.quota-watch-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.quota-watch-count {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--badge-bg);
+  color: var(--badge-text);
+}
+
+.quota-watch-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quota-watch-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.quota-watch-item:hover {
+  border-color: #6366f1;
+}
+
+.quota-watch-item.quota-available {
+  border-left: 3px solid #10b981;
+}
+
+.quota-watch-item.quota-full {
+  border-left: 3px solid #ef4444;
+}
+
+.quota-watch-item.quota-loading {
+  opacity: 0.7;
+}
+
+.quota-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  min-width: 60px;
+}
+
+.quota-numbers {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-weight: 700;
+}
+
+.quota-remaining {
+  font-size: 16px;
+}
+
+.quota-separator {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.quota-total {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.quota-bar {
+  width: 50px;
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.quota-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.quota-remove-btn {
+  padding: 4px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.quota-remove-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.quota-loading-spinner {
+  min-width: 60px;
+  display: flex;
+  justify-content: center;
+}
+
+.quota-empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.section-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.section-add-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-color: transparent;
+  color: white;
+}
+
+.section-add-btn.added {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  color: #10b981;
+  cursor: default;
+}
+
+.section-add-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Quota Mini Badge (in course list) */
+.quota-mini-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+}
+
+.quota-mini-badge.quota-green {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.quota-mini-badge.quota-red {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* Quota Tags (in bottom section) */
+.quota-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.quota-tag-available {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.quota-tag-full {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.quota-tag-code {
+  font-family: monospace;
+  font-weight: 700;
+}
+
+.quota-tag-section {
+  opacity: 0.8;
+  font-size: 10px;
+}
+
+.quota-tag-value {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  color: white;
+}
+
+/* ===== QUOTA DETAIL CARDS ===== */
+.quota-detail-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.quota-detail-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.quota-detail-header {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+.quota-detail-card.quota-available .quota-detail-header {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.quota-detail-card.quota-full .quota-detail-header {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.quota-detail-card.quota-pending .quota-detail-header {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+.quota-progress {
+  background: var(--bg-secondary);
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+}
+
+.detail-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  flex-shrink: 0;
+}
+
+.detail-text {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ===== GRADE CALCULATOR ===== */
+.grade-card {
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.grade-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.grade-card-header {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  min-height: 100px;
+}
+
+.grade-card:nth-child(2n) .grade-card-header {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+}
+
+.grade-card:nth-child(3n) .grade-card-header {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.grade-card:nth-child(4n) .grade-card-header {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.grade-card:nth-child(5n) .grade-card-header {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.grade-component-row {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.grade-component-row:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.grade-result-summary {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+/* Number input arrows removal */
+.grade-component-row input[type="number"]::-webkit-inner-spin-button,
+.grade-component-row input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.grade-component-row input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 </style>

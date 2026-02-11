@@ -3,12 +3,13 @@ package com.yeditepe.courseselector.controller;
 import com.yeditepe.courseselector.dto.*;
 import com.yeditepe.courseselector.service.CourseCacheService;
 import com.yeditepe.courseselector.service.ScheduleService;
+import com.yeditepe.courseselector.service.YeditepeApiService;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -16,10 +17,14 @@ public class CourseController {
 
     private final CourseCacheService cacheService;
     private final ScheduleService scheduleService;
+    private final YeditepeApiService apiService;
 
-    public CourseController(CourseCacheService cacheService, ScheduleService scheduleService) {
+    public CourseController(CourseCacheService cacheService, 
+                           ScheduleService scheduleService,
+                           YeditepeApiService apiService) {
         this.cacheService = cacheService;
         this.scheduleService = scheduleService;
+        this.apiService = apiService;
     }
 
     @GetMapping("/seasons")
@@ -79,6 +84,70 @@ public class CourseController {
         // Use the new method that handles both AUTO and MANUAL modes
         ScheduleResult result = scheduleService.generateSchedule(allCourses, request);
         return ResponseEntity.ok(result);
+    }
+
+    // ============ QUOTA CHECK ENDPOINT ============
+
+    /**
+     * Check quotas for specific courses - fetches FRESH data from API
+     */
+    @PostMapping("/quota/check")
+    public ResponseEntity<Map<String, Object>> checkQuotas(@RequestBody QuotaRequest request) {
+        if (request.getCourses() == null || request.getCourses().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "error", "En az bir ders seçilmelidir"
+            ));
+        }
+
+        // Group courses by department to minimize API calls
+        Map<Long, List<QuotaRequest.CourseIdentifier>> coursesByDept = request.getCourses().stream()
+            .filter(c -> c.getDepartmentId() != null)
+            .collect(Collectors.groupingBy(QuotaRequest.CourseIdentifier::getDepartmentId));
+
+        List<QuotaInfo> results = new ArrayList<>();
+        
+        // Fetch fresh data for each department
+        for (Map.Entry<Long, List<QuotaRequest.CourseIdentifier>> entry : coursesByDept.entrySet()) {
+            Long deptId = entry.getKey();
+            List<QuotaRequest.CourseIdentifier> deptCourses = entry.getValue();
+            
+            try {
+                // Fetch FRESH course data from API (not from cache)
+                List<Course> freshCourses = apiService.getCourses(request.getSeasonId(), deptId);
+                
+                // Match requested courses with fresh data
+                for (QuotaRequest.CourseIdentifier requested : deptCourses) {
+                    Course found = freshCourses.stream()
+                        .filter(c -> c.getCode().equals(requested.getCode()) && 
+                                    c.getSection().equals(requested.getSection()))
+                        .findFirst()
+                        .orElse(null);
+                    
+                    if (found != null) {
+                        results.add(new QuotaInfo(found));
+                    } else {
+                        results.add(QuotaInfo.notFound(requested.getCode(), requested.getSection()));
+                    }
+                }
+            } catch (Exception e) {
+                // If API call fails, mark all courses from this department as error
+                for (QuotaRequest.CourseIdentifier requested : deptCourses) {
+                    QuotaInfo errorInfo = new QuotaInfo();
+                    errorInfo.setCode(requested.getCode());
+                    errorInfo.setSection(requested.getSection());
+                    errorInfo.setFound(false);
+                    errorInfo.setError("API hatası: " + e.getMessage());
+                    results.add(errorInfo);
+                }
+            }
+        }
+
+        return ResponseEntity.ok(Map.of(
+            "success", true,
+            "quotas", results,
+            "checkedAt", System.currentTimeMillis()
+        ));
     }
 
     // ============ CACHE MANAGEMENT ENDPOINTS ============

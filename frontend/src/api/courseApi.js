@@ -45,5 +45,13 @@ export const courseApi = {
   async generateScheduleAdvanced(requestData) {
     const response = await api.post('/schedule/generate', requestData)
     return response.data
+  },
+
+  async checkQuotas(seasonId, courses) {
+    const response = await api.post('/quota/check', {
+      seasonId,
+      courses
+    })
+    return response.data
   }
 }

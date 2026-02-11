@@ -131,6 +131,8 @@ public class CourseCacheService {
             try {
                 List<Course> deptCourses = yeditepeApiService.getCourses(seasonId, dept.getId());
                 if (!deptCourses.isEmpty()) {
+                    // Set departmentId on each course for quota checking
+                    deptCourses.forEach(course -> course.setDepartmentId(dept.getId()));
                     coursesByDept.put(dept.getId(), Collections.unmodifiableList(new ArrayList<>(deptCourses)));
                     allCoursesForSeason.addAll(deptCourses);
                     log.debug("Cached {} courses for department: {}", deptCourses.size(), dept.getName());
@@ -201,6 +203,9 @@ public class CourseCacheService {
         log.info("Courses for season {} dept {} not in cache, fetching...", seasonId, departmentId);
         try {
             List<Course> courses = yeditepeApiService.getCourses(seasonId, departmentId);
+            
+            // Set departmentId on each course for quota checking
+            courses.forEach(course -> course.setDepartmentId(departmentId));
             
             // Add to cache
             cachedCoursesBySeasonAndDept

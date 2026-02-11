@@ -20,4 +20,5 @@ public class Course {
     private Integer quota;
     private String info;
     private List<CourseDetail> details;
+    private Long departmentId;  // Added for quota checking
 }

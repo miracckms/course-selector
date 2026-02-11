@@ -80,6 +80,7 @@ export default {
   weeklySchedule: 'Weekly Schedule',
   scheduledCourses: 'Courses in Generated Schedule',
   credit: 'Credit',
+  quota: 'Quota',
 
   // Empty state
   noScheduleYet: 'No Schedule Yet',
@@ -101,5 +102,71 @@ export default {
     ps: 'PS',
     other: 'Other',
     conflict: 'Conflict'
-  }
+  },
+
+  // Tabs
+  scheduleTab: 'Schedule',
+  quotaTab: 'Quota',
+
+  // Quota
+  quotaCheck: 'Check Quota',
+  quotaDescription: 'Select courses to track their quotas in real-time.',
+  watchList: 'Watching',
+  emptyWatchList: 'Your watch list is empty.',
+  addToWatchList: 'Add Course',
+  watchedCourses: 'Watched',
+  watchedCoursesDetail: 'Watched Courses',
+  available: 'Available',
+  full: 'Full',
+  pending: 'Pending',
+  remaining: 'Remaining',
+  capacity: 'Capacity',
+  enrolled: 'Enrolled',
+  noWatchedCourses: 'No Watched Courses',
+  noWatchedCoursesMessage: 'Select courses from the left menu to track their quotas.',
+  addCourseToWatch: 'Add Course',
+  removeFromWatch: 'Remove from Watch',
+  refreshQuotas: 'Refresh Quotas',
+  checking: 'Checking...',
+  lastChecked: 'Last checked',
+  justNow: 'Just now',
+  minutesAgo: '{count} min ago',
+  errorCheckingQuotas: 'Error checking quotas: {message}',
+
+  // Grade Calculator
+  gradeTab: 'Grades',
+  gradeCalculator: 'Grade Calculator',
+  gradeDescription: 'Add courses, enter grade components, calculate your grade.',
+  addCourse: 'Add Course',
+  courseName: 'Course Name',
+  addComponent: 'Add Component',
+  componentName: 'Component',
+  weight: 'Weight (%)',
+  score: 'Score',
+  totalWeight: 'Total Weight',
+  weightedTotal: 'Weighted Total',
+  letterGrade: 'Letter Grade',
+  removeCourse: 'Remove Course',
+  removeComponent: 'Remove',
+  noGradeCourses: 'No Courses Added',
+  noGradeCoursesMessage: 'Add courses from the left menu to start calculating grades.',
+  gradeCoursesList: 'My Courses',
+  gradeCoursesDetail: 'Grade Calculation Details',
+  enterCourseName: 'Enter course name...',
+  defaultComponents: {
+    midterm: 'Midterm',
+    final: 'Final',
+    quiz: 'Quiz',
+    homework: 'Homework',
+    project: 'Project',
+    lab: 'Laboratory',
+    attendance: 'Attendance'
+  },
+  weightWarning: 'Total weight must be 100%',
+  weightPerfect: 'Total weight is 100%',
+  clearAllGrades: 'Clear All',
+  averageGrade: 'Average',
+  courseCount: 'Courses',
+  calculated: 'Calculated',
+  notCalculated: 'Incomplete'
 }

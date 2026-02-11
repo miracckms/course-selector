@@ -80,6 +80,7 @@ export default {
   weeklySchedule: 'Haftalık Program',
   scheduledCourses: 'Oluşturulan Programdaki Dersler',
   credit: 'Kredi',
+  quota: 'Kontenjan',
 
   // Empty state
   noScheduleYet: 'Henüz Program Yok',
@@ -101,5 +102,71 @@ export default {
     ps: 'PS',
     other: 'Diğer',
     conflict: 'Çakışma'
-  }
+  },
+
+  // Tabs
+  scheduleTab: 'Program',
+  quotaTab: 'Kontenjan',
+
+  // Quota
+  quotaCheck: 'Kontenjan Sorgula',
+  quotaDescription: 'Dersleri seç, kontenjanlarını anlık olarak takip et.',
+  watchList: 'İzlenenler',
+  emptyWatchList: 'İzleme listeniz boş.',
+  addToWatchList: 'Ders Ekle',
+  watchedCourses: 'İzlenen Ders',
+  watchedCoursesDetail: 'İzlenen Dersler',
+  available: 'Kontenjan Var',
+  full: 'Dolu',
+  pending: 'Bekliyor',
+  remaining: 'Kalan',
+  capacity: 'Kapasite',
+  enrolled: 'Kayıtlı',
+  noWatchedCourses: 'İzlenen Ders Yok',
+  noWatchedCoursesMessage: 'Sol menüden ders seçerek kontenjanlarını takip edebilirsiniz.',
+  addCourseToWatch: 'Ders Ekle',
+  removeFromWatch: 'İzlemeyi Kaldır',
+  refreshQuotas: 'Kontenjanlari Güncelle',
+  checking: 'Kontrol ediliyor...',
+  lastChecked: 'Son kontrol',
+  justNow: 'Az önce',
+  minutesAgo: '{count} dk önce',
+  errorCheckingQuotas: 'Kontenjan kontrolünde hata: {message}',
+
+  // Grade Calculator
+  gradeTab: 'Not Hesapla',
+  gradeCalculator: 'Not Hesaplayıcı',
+  gradeDescription: 'Derslerini ekle, puan kalemlerini gir, notunu hesapla.',
+  addCourse: 'Ders Ekle',
+  courseName: 'Ders Adı',
+  addComponent: 'Puan Kalemi Ekle',
+  componentName: 'Puan Kalemi',
+  weight: 'Ağırlık (%)',
+  score: 'Puan',
+  totalWeight: 'Toplam Ağırlık',
+  weightedTotal: 'Ağırlıklı Toplam',
+  letterGrade: 'Harf Notu',
+  removeCourse: 'Dersi Sil',
+  removeComponent: 'Kalemi Sil',
+  noGradeCourses: 'Henüz Ders Eklenmedi',
+  noGradeCoursesMessage: 'Sol menüden ders ekleyerek not hesaplaması yapabilirsiniz.',
+  gradeCoursesList: 'Derslerim',
+  gradeCoursesDetail: 'Not Hesaplama Detayları',
+  enterCourseName: 'Ders adı girin...',
+  defaultComponents: {
+    midterm: 'Vize',
+    final: 'Final',
+    quiz: 'Quiz',
+    homework: 'Ödev',
+    project: 'Proje',
+    lab: 'Laboratuvar',
+    attendance: 'Devam'
+  },
+  weightWarning: 'Ağırlık toplamı %100 olmalıdır',
+  weightPerfect: 'Ağırlık toplamı %100',
+  clearAllGrades: 'Tümünü Temizle',
+  averageGrade: 'Ortalama',
+  courseCount: 'Ders Sayısı',
+  calculated: 'Hesaplanan',
+  notCalculated: 'Eksik'
 }
